@@ -218,6 +218,37 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--pink);outline-o
 .rankb{display:inline-flex;align-items:center;gap:8px;margin-top:14px}
 @media(max-width:760px){.eux{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:600px){.mapw svg.geo{min-width:0;max-height:none}.mapcard{padding:6px}.zbtns{right:12px;top:12px}.showm{display:block}.tag{min-height:42px;padding:6px 12px;font-size:16px}.tray{gap:6px}.area{height:calc(100dvh - 250px);min-height:340px}.prompt{font-size:24px;margin-bottom:10px}.bar{margin-bottom:12px}.bar h2{font-size:24px}.wrap{padding-top:14px}.lbrow{grid-template-columns:34px 34px minmax(0,1fr) 4.4em 4.4em;gap:6px;font-size:16px}}
+:root{--sil:light-dark(#dbe4f5,#2a3566)}
+.fig .tile{cursor:pointer}.fig .tile.off{pointer-events:none;opacity:.55}
+.fig .tile:not(.off):hover{filter:brightness(1.06)}
+.fig .tile.bad{--f:#ff5a4e!important}
+.fig .tile.sel,.fig .tile.hint{filter:drop-shadow(2px 0 0 #1b2147) drop-shadow(-2px 0 0 #1b2147) drop-shadow(0 2px 0 #1b2147) drop-shadow(0 -2px 0 #1b2147)}
+.fig .tile.hint{animation:blink .5s 4 alternate}
+.fig .tile.good{animation:popin .45s}
+.fig .deco{pointer-events:none}
+.fig .lab{cursor:pointer}
+.fig .lab line{stroke:var(--mute);stroke-width:1.5;pointer-events:none}.fig .lab circle{fill:var(--ink);pointer-events:none}
+.fig .lab rect{fill:var(--card);stroke:var(--line);stroke-width:2}
+.mapcard.figc .zbtns{position:static;flex-direction:row;justify-content:flex-end;margin:6px 4px 0}
+.fig .lab text{font:800 14px Nunito,system-ui,sans-serif;fill:var(--ink);pointer-events:none}
+.fig .lab.slot rect{fill:light-dark(rgba(255,255,255,.7),rgba(20,30,70,.6));stroke:var(--mute);stroke-dasharray:5 4}
+.fig .lab.placed rect{fill:light-dark(#e3f8ec,#163d32);stroke:var(--green)}
+.fig .lab.hl rect{fill:var(--pink);stroke:var(--pink)}.fig .lab.hl text{fill:#fff}
+.mapw svg.fig{width:100%;min-width:0;height:auto;max-height:78vh;display:block;touch-action:none}
+@media(min-width:601px){#s-bplace .mapw svg.fig,#s-bwhere .mapw svg.fig{max-height:max(320px,calc(100dvh - 300px))}}
+@media(max-width:600px){.mapw svg.fig{max-height:none}}
+.figname{font-weight:800;color:var(--mute);font-size:14px;margin:2px 6px 4px}
+.figtabs{margin-top:-4px}
+.figmini svg.fig{max-height:300px}
+.prompt small.clue{font-size:18px;color:var(--ink);font-weight:700;background:var(--soft);border-radius:14px;padding:10px 14px;margin-top:10px;line-height:1.3}
+.sortw{font-family:"Baloo 2",system-ui,sans-serif;font-weight:800;font-size:clamp(34px,8vw,60px);text-align:center;min-height:1.4em;margin:20px 0 24px;overflow-wrap:anywhere;line-height:1.1}
+.sortw.in{animation:popin .3s}
+.sortb{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;max-width:560px;margin:0 auto}
+.sortb .btn{min-height:96px;font-size:clamp(24px,5vw,32px);border-radius:22px}
+.sbh{background:#e0a800!important;box-shadow:0 6px 0 #a87e00!important;color:#1b2147!important}
+.sbm{background:#e84393!important;box-shadow:0 6px 0 #b0306f!important}
+.mc .f.tx.pic{padding:0;overflow:hidden;background:var(--card)}
+.mc .f.tx.pic svg{width:100%;height:100%;max-height:none}
 .mapcard{position:relative}
 .mapw svg.geo{touch-action:none;cursor:grab}
 .zbtns{position:absolute;right:16px;top:16px;display:flex;flex-direction:column;gap:6px;z-index:2}
@@ -438,6 +469,90 @@ button,.tile{touch-action:manipulation}
   <p class="muted">Ordenado por estrellas ganadas en el módulo. "Dominado" es lo que ya han acertado 5 veces seguidas.</p>
 </div></section>
 
+<!-- CUERPO: MENÚ -->
+<section class="screen" id="s-body">
+  <div class="band" style="background:#c2185b"><div class="in">
+    <div class="bandtop"><button class="back" data-portal aria-label="Volver al inicio">←<span class="hidem"> Inicio</span></button><h1>Huesos y músculos</h1></div>
+    <p class="lbl">¿Qué estudias?</p>
+    <div class="lvls" id="bCats"></div>
+    <div class="lvlinfo" id="bInfo"></div>
+  </div></div>
+  <div class="wrap" style="padding-top:18px">
+    <h2 class="secttl">¿A qué jugamos?</h2>
+    <div class="modes" id="bModes"></div>
+  </div>
+</section>
+
+<!-- CUERPO: EXPLORAR -->
+<section class="screen" id="s-bexp"><div class="wrap">
+  <div class="bar"><button class="back" data-body>← Cuerpo</button><h2>Explora el cuerpo</h2></div>
+  <div class="seg figtabs" id="bxTabs"></div>
+  <div class="eux" style="margin-top:12px">
+    <div class="card mapcard"><div class="mapw" id="bxFig"></div></div>
+    <div class="card" id="bxInfo"></div>
+  </div>
+  <div class="card" style="margin-top:20px"><h3 style="font-size:22px">Todas las partes de este dibujo</h3><div class="clist" id="bxList"></div></div>
+</div></section>
+
+<!-- CUERPO: DÓNDE ESTÁ -->
+<section class="screen" id="s-bwhere"><div class="wrap">
+  <div class="bar"><button class="back" data-body>← Cuerpo</button><h2>¿Dónde está?</h2><span class="sp"></span><span class="stat" id="bwCount"></span><span class="stat">Aciertos <span id="bwOk">0</span></span></div>
+  <div class="prompt" id="bwQ"></div>
+  <div class="card mapcard"><div class="figname" id="bwFigName"></div><div class="mapw" id="bwFig"></div></div>
+  <div class="fb" id="bwFb" aria-live="polite"></div>
+</div></section>
+
+<!-- CUERPO: ETIQUETAS -->
+<section class="screen" id="s-bplace"><div class="wrap">
+  <div class="bar"><button class="back" data-body>← Cuerpo</button><h2>Pon las etiquetas</h2><span class="sp"></span><span class="stat">Quedan <span id="blLeft">0</span></span><span class="stat">Fallos <span id="blKo">0</span></span></div>
+  <p class="muted hidem" style="margin-top:-6px">Arrastra cada nombre a su cajita o a su parte del dibujo. También puedes tocar un nombre y luego tocar su sitio.</p><p class="muted showm" style="margin:-6px 0 8px">Arrastra un nombre a su cajita, o tócalo y luego toca su sitio.</p>
+  <div class="tray" id="blTray"></div>
+  <div class="fb" id="blFb" aria-live="polite" style="margin:0 0 8px"></div>
+  <div class="card mapcard"><div class="figname" id="blFigName"></div><div class="mapw" id="blFig"></div></div>
+</div></section>
+
+<!-- CUERPO: QUÉ ES -->
+<section class="screen" id="s-bquiz"><div class="wrap">
+  <div class="bar"><button class="back" data-body>← Cuerpo</button><h2>¿Qué es?</h2><span class="sp"></span><span class="stat" id="bqCount"></span></div>
+  <div class="card qbox">
+    <div class="prompt" id="bqQ"></div>
+    <div class="mapcard mini figmini" id="bqFigC"><div class="mapw" id="bqFig"></div></div>
+    <div id="bqA"></div>
+    <div class="fb" id="bqFb" aria-live="polite"></div>
+  </div>
+</div></section>
+
+<!-- CUERPO: HUESO O MÚSCULO -->
+<section class="screen" id="s-bsort"><div class="wrap">
+  <div class="bar"><button class="back" data-body>← Cuerpo</button><h2>¿Hueso o músculo?</h2><span class="sp"></span><span class="stat">Puntos <span id="bsScore">0</span></span><span class="stat"><span id="bsSec">45</span> s</span></div>
+  <div class="tbar"><div id="bsBar" style="width:100%"></div></div>
+  <div class="card qbox" style="position:relative">
+    <div class="sortw" id="bsWord" aria-live="polite"></div>
+    <div class="sortb"><button class="btn sbh" id="bsH">Hueso</button><button class="btn sbm" id="bsM">Músculo</button></div>
+    <div class="fb" id="bsFb"></div>
+    <div class="cd" id="bsCd"></div>
+  </div>
+</div></section>
+
+<!-- CUERPO: PAREJAS -->
+<section class="screen" id="s-bmem"><div class="wrap">
+  <div class="bar"><button class="back" data-body>← Cuerpo</button><h2>Parejas</h2><span class="sp"></span><span class="stat">Intentos <span id="bmMoves">0</span></span><span class="stat">Parejas <span id="bmPairs">0</span>/<span id="bmTot">6</span></span></div>
+  <p class="muted" style="margin-top:-6px">Junta cada nombre con su dibujo.</p>
+  <div class="mem" id="bMem"></div>
+</div></section>
+
+<!-- CUERPO: PROGRESO -->
+<section class="screen" id="s-bprog"><div class="wrap">
+  <div class="bar"><button class="back" data-body>← Cuerpo</button><h2 id="bgTitle">Mi progreso</h2></div>
+  <div class="seg figtabs" id="bgTabs"></div>
+  <div class="eux" style="margin-top:12px">
+    <div class="card mapcard"><div class="mapw" id="bgFig"></div>
+      <div class="legend" style="margin:10px 6px 0"><span><i style="background:var(--green)"></i>Dominado: 5 seguidas sin fallar (dónde está y cómo se llama)</span><span><i style="background:var(--sun)"></i>Practicando</span><span><i style="background:var(--red)"></i>Falló la última vez</span><span><i style="background:var(--land2);border:1px solid var(--line)"></i>Sin jugar</span></div></div>
+    <div class="card"><h3 style="font-size:22px;margin-bottom:10px">Por temas</h3><div class="mast" id="bgCats"></div>
+      <div class="mbtns" style="justify-content:flex-start"><button class="btn ghost" id="bReset">Borrar progreso del cuerpo</button></div></div>
+  </div>
+</div></section>
+
 <div class="modal" id="modal" role="dialog" aria-modal="true"><div class="card" id="modalC"></div></div>
 
 <script>
@@ -455,7 +570,7 @@ const COL=['#ff5a4e','#ffb400','#1fae66','#2b6bff','#a855f7','#ff4f8b','#00b8d9'
 const TIPS={1:'Cualquier número por 1 se queda igual.',2:'Por 2 es el doble: suma el número consigo mismo. 2 × 7 = 7 + 7.',3:'Por 3: el doble y una vez más. 3 × 6 = 12 + 6.',4:'Por 4: el doble del doble. 4 × 6 → 12 → 24.',5:'Por 5 siempre acaba en 0 o en 5. Es la mitad de por 10: 5 × 8 = 80 ÷ 2.',6:'Por 6: haz por 5 y suma el número otra vez. 6 × 7 = 35 + 7.',7:'Por 7: junta por 5 y por 2. 7 × 8 = 40 + 16.',8:'Por 8: doble, doble y doble. 8 × 3 → 6 → 12 → 24.',9:'Por 9: haz por 10 y quita el número. 9 × 7 = 70 − 7. ¡Sus cifras suman 9!',10:'Por 10: pon un cero detrás. 10 × 6 = 60.',11:'Por 11 (hasta el 9) repite la cifra: 11 × 4 = 44.',12:'Por 12: haz por 10 y suma el doble. 12 × 6 = 60 + 12.'};
 const DEF={tables:[2,5,10],max:10,qtype:'result',answer:'options',speed:'normal',count:10,sound:true,hints:true,shape:'apple'};
 let cfg={...DEF},stats={},stars=0,best={};
-function loadProfile(){cfg=Object.assign({...DEF},LS.get('cfg',{}));stats=LS.get('stats',{});stars=RAW.get('apr_p'+pid+'_stars',0);best=LS.get('best',{});if(RAW.get('apr_p'+pid+'_stars_tablas',null)===null)RAW.set('apr_p'+pid+'_stars_tablas',stars);euLoad();drawWho()}
+function loadProfile(){cfg=Object.assign({...DEF},LS.get('cfg',{}));stats=LS.get('stats',{});stars=RAW.get('apr_p'+pid+'_stars',0);best=LS.get('best',{});if(RAW.get('apr_p'+pid+'_stars_tablas',null)===null)RAW.set('apr_p'+pid+'_stars_tablas',stars);euLoad();bLoad();drawWho()}
 function drawWho(){const p=cur();$('#who').innerHTML=p?`${avatar(p)}<span class="nm">${esc(p.name)}</span>`:'';$('#starN').textContent=stars}
 let G=0, raf=0;
 const saveCfg=()=>{cfg.tables=cfg.tables.filter(n=>n<=cfg.max);LS.set('cfg',cfg)};
@@ -723,7 +838,7 @@ function geoMap(o){const[vx,vy,vw,vh]=GEO.vb;let defs='',body='',labs='';
   body+=`<g class="tile${on?'':' off'}" data-c="${c.k}"><title>${on&&(o.labels||(o.shown&&o.shown.has(c.k)))?c.n:'País'}</title><path d="${g.d}" fill="${fill}" stroke="#fff" stroke-width="1.2" stroke-linejoin="round"/>${g.small?`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="10" fill="${fill}" stroke="#1b2147" stroke-width="2"/>`:''}</g>`;
   if((o.labels==='all'&&on)||(o.shown&&o.shown.has(c.k))){const fs=Math.max(15,Math.min(30,g.w/4.5)),n=SHORT[c.k]||c.n;labs+=`<text x="${(px+(g.small?14:0)).toFixed(1)}" y="${(py+fs*.35).toFixed(1)}" font-size="${fs.toFixed(0)}" text-anchor="${g.small?'start':'middle'}">${n}</text>`}
   if(o.cap===c.k){const[cx,cy]=proj(GI[c.k][3],GI[c.k][4]);labs+=`<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="7" fill="#ff4f8b" stroke="#fff" stroke-width="3"/><text x="${(cx+10).toFixed(1)}" y="${(cy-8).toFixed(1)}" font-size="20" class="capl">${c.cap}</text>`}}
- return `<svg class="map dark geo" viewBox="${vx.toFixed(0)} ${vy.toFixed(0)} ${vw.toFixed(0)} ${vh.toFixed(0)}" role="img" aria-label="Mapa político de Europa"><defs>${defs}</defs><rect x="${vx}" y="${vy}" width="${vw}" height="${vh}" fill="var(--sea)"/><path d="${GEO.bg}" fill="var(--land)" stroke="#fff" stroke-width="1"/>${body}<g class="labs">${labs}</g></svg>`}
+ return `<svg class="map dark geo zm" viewBox="${vx.toFixed(0)} ${vy.toFixed(0)} ${vw.toFixed(0)} ${vh.toFixed(0)}" role="img" aria-label="Mapa político de Europa"><defs>${defs}</defs><rect x="${vx}" y="${vy}" width="${vw}" height="${vh}" fill="var(--sea)"/><path d="${GEO.bg}" fill="var(--land)" stroke="#fff" stroke-width="1"/>${body}<g class="labs">${labs}</g></svg>`}
 
 /* ---------- zoom del mapa: se ajusta a las zonas elegidas; pellizcar, arrastrar, rueda y botones ---------- */
 function fitBox(codes,minS=300){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const k of codes){const b=GEO.c[k]&&GEO.c[k].bb;if(!b)continue;x0=Math.min(x0,b[0]);y0=Math.min(y0,b[1]);x1=Math.max(x1,b[2]);y1=Math.max(y1,b[3])}
@@ -731,27 +846,27 @@ function fitBox(codes,minS=300){let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;for(const k of
  if(w<minS){x0-=(minS-w)/2;w=minS}if(h<minS*.8){y0-=(minS*.8-h)/2;h=minS*.8}
  if(w/h<.85){const nw=h*.85;x0-=(nw-w)/2;w=nw}if(w/h>1.5){const nh=w/1.5;y0-=(nh-h)/2;h=nh}
  return clampVb([x0,y0,w,h])}
-function clampVb(b){const[vx,vy,vw,vh]=GEO.vb;const r=b[2]/b[3];if(b[2]>vw){b[2]=vw;b[3]=vw/r}if(b[3]>vh){b[3]=vh;b[2]=vh*r}if(b[2]<90){b[2]=90;b[3]=90/r}
+function clampVb(b,B=GEO.vb){const[vx,vy,vw,vh]=B;const r=b[2]/b[3];if(b[2]>vw){b[2]=vw;b[3]=vw/r}if(b[3]>vh){b[3]=vh;b[2]=vh*r}if(b[2]<90){b[2]=90;b[3]=90/r}
  b[0]=Math.max(vx,Math.min(vx+vw-b[2],b[0]));b[1]=Math.max(vy,Math.min(vy+vh-b[3],b[1]));return b}
 const ZV={};
-function zoomable(box,fit){const svg=$(box+' svg.geo');if(!svg)return;const fk=fit.map(Math.round).join();let st=ZV[box];if(!st||st.fk!==fk)st=ZV[box]={fk,vb:[...fit]};
+function zoomable(box,fit,B=GEO.vb){const svg=$(box+' svg.zm');if(!svg)return;const fk=fit.map(Math.round).join();let st=ZV[box];if(!st||st.fk!==fk)st=ZV[box]={fk,vb:[...fit]};
  const set=()=>svg.setAttribute('viewBox',st.vb.map(v=>v.toFixed(1)).join(' '));set();
- const zoomAt=(k,cx,cy)=>{const m=svg.getScreenCTM();if(!m)return;const X=(cx-m.e)/m.a,Y=(cy-m.f)/m.d,b=st.vb,nw=Math.max(90,Math.min(GEO.vb[2],b[2]*k)),f=nw/b[2];st.vb=clampVb([X-(X-b[0])*f,Y-(Y-b[1])*f,nw,b[3]*f]);set()};
+ const zoomAt=(k,cx,cy)=>{const m=svg.getScreenCTM();if(!m)return;const X=(cx-m.e)/m.a,Y=(cy-m.f)/m.d,b=st.vb,nw=Math.max(90,Math.min(B[2],b[2]*k)),f=nw/b[2];st.vb=clampVb([X-(X-b[0])*f,Y-(Y-b[1])*f,nw,b[3]*f],B);set()};
  const P=new Map();let S=null,moved=false;
  const snap=()=>{S={vb:[...st.vb],pts:new Map(P),m:svg.getScreenCTM()}};
  svg.onpointerdown=e=>{if(e.pointerType==='mouse'&&e.button>0)return;P.set(e.pointerId,[e.clientX,e.clientY]);if(P.size===1){moved=false;svg.dataset.panned=''}snap()};
  svg.onpointermove=e=>{if(!P.has(e.pointerId)||!S||!S.m)return;P.set(e.pointerId,[e.clientX,e.clientY]);
-  if(P.size===1){const[id,[x,y]]=[...P][0],o=S.pts.get(id);if(!o)return snap();const dx=x-o[0],dy=y-o[1];if(!moved&&Math.hypot(dx,dy)<9)return;moved=true;st.vb=clampVb([S.vb[0]-dx/S.m.a,S.vb[1]-dy/S.m.d,S.vb[2],S.vb[3]]);set()}
+  if(P.size===1){const[id,[x,y]]=[...P][0],o=S.pts.get(id);if(!o)return snap();const dx=x-o[0],dy=y-o[1];if(!moved&&Math.hypot(dx,dy)<9)return;moved=true;st.vb=clampVb([S.vb[0]-dx/S.m.a,S.vb[1]-dy/S.m.d,S.vb[2],S.vb[3]],B);set()}
   else{const ids=[...P.keys()].slice(0,2),a0=S.pts.get(ids[0]),b0=S.pts.get(ids[1]);if(!a0||!b0)return snap();moved=true;const a=P.get(ids[0]),b=P.get(ids[1]);
-   const k=Math.hypot(a0[0]-b0[0],a0[1]-b0[1])/Math.max(20,Math.hypot(a[0]-b[0],a[1]-b[1])),nw=Math.max(90,Math.min(GEO.vb[2],S.vb[2]*k)),a2=S.m.a*S.vb[2]/nw;
+   const k=Math.hypot(a0[0]-b0[0],a0[1]-b0[1])/Math.max(20,Math.hypot(a[0]-b[0],a[1]-b[1])),nw=Math.max(90,Math.min(B[2],S.vb[2]*k)),a2=S.m.a*S.vb[2]/nw;
    const L=S.m.e+S.vb[0]*S.m.a,T=S.m.f+S.vb[1]*S.m.d,X0=((a0[0]+b0[0])/2-S.m.e)/S.m.a,Y0=((a0[1]+b0[1])/2-S.m.f)/S.m.d,mx=(a[0]+b[0])/2,my=(a[1]+b[1])/2;
-   st.vb=clampVb([X0-(mx-L)/a2,Y0-(my-T)/a2,nw,S.vb[3]*nw/S.vb[2]]);set()}};
+   st.vb=clampVb([X0-(mx-L)/a2,Y0-(my-T)/a2,nw,S.vb[3]*nw/S.vb[2]],B);set()}};
  const up=e=>{if(!P.has(e.pointerId))return;P.delete(e.pointerId);if(moved)svg.dataset.panned='1';if(P.size)snap();else S=null};
  svg.onpointerup=up;svg.onpointercancel=up;svg.onpointerleave=e=>{if(e.pointerType==='mouse')up(e)};
  svg.onwheel=e=>{e.preventDefault();zoomAt(e.deltaY>0?1.18:1/1.18,e.clientX,e.clientY)};
- const card=svg.closest('.mapcard');if(card&&!card.querySelector('.zbtns')){const z=document.createElement('div');z.className='zbtns';
+ const card=svg.closest('.mapcard');if(card&&svg.classList.contains('fig'))card.classList.add('figc');if(card&&!card.querySelector('.zbtns')){const z=document.createElement('div');z.className='zbtns';
   z.innerHTML='<button data-z="in" aria-label="Acercar">+</button><button data-z="out" aria-label="Alejar">−</button><button data-z="fit" aria-label="Ver todo">⤢</button>';card.appendChild(z)}
- if(card)card.querySelectorAll('.zbtns button').forEach(b=>b.onclick=()=>{const s2=$(box+' svg.geo');if(!s2)return;const r=s2.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+ if(card)card.querySelectorAll('.zbtns button').forEach(b=>b.onclick=()=>{const s2=$(box+' svg.zm');if(!s2)return;const r=s2.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
   if(b.dataset.z==='fit'){st.vb=[...fit];set()}else zoomAt(b.dataset.z==='in'?1/1.4:1.4,cx,cy)})}
 function drawMap(box,o,fitCodes,minS){$(box).innerHTML=euMap(o);if(GEO)zoomable(box,fitBox(fitCodes||o.only||EU.map(c=>c.k),minS))}
 
@@ -829,7 +944,7 @@ function plRender(){mapRefresh=plRender;$('#plKo').textContent=PL.ko;$('#plLeft'
  $$('#plTray .tag').forEach(el=>el.onpointerdown=e=>plGrab(e,el))}
 function plGrab(e,el){if(e.button>0)return;e.preventDefault();const k=el.dataset.k,sx=e.clientX,sy=e.clientY;let ghost=null;
  const mv=ev=>{if(!ghost&&Math.hypot(ev.clientX-sx,ev.clientY-sy)>8){ghost=el.cloneNode(true);ghost.classList.add('drag');document.body.appendChild(ghost);el.style.opacity=.35}
-  if(ghost){ghost.style.left=ev.clientX+'px';ghost.style.top=ev.clientY+'px'}};
+  if(ghost){ghost.style.left=ev.clientX+'px';ghost.style.top=ev.clientY+'px';if(ev.clientY>innerHeight-70)scrollBy(0,14);else if(ev.clientY<90)scrollBy(0,-14);}};
  const up=ev=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);removeEventListener('pointercancel',up);
   if(ghost){ghost.remove();el.style.opacity='';const t=document.elementFromPoint(ev.clientX,ev.clientY),g=t&&t.closest&&t.closest('#plMap .tile:not(.off)');if(g)plDrop(k,g.dataset.c);else{PL.sel=null;plRender()}}
   else{PL.sel=PL.sel===k?null:k;plRender()}};
@@ -882,7 +997,8 @@ $('#euReset').onclick=()=>modal('<h2>¿Borrar Europa?</h2><p>Se borra el progres
 /* ---------- clasificación entre jugadores ---------- */
 const RANKMODS=[
  {id:'tablas',n:'Tablas de multiplicar',pct:id=>tablasPctOf(RAW.get('apr_p'+id+'_tablas_stats',{}))},
- {id:'europa',n:'Países de Europa',pct:id=>euPctOf(RAW.get('apr_p'+id+'_europa_stats',{}))}];
+ {id:'europa',n:'Países de Europa',pct:id=>euPctOf(RAW.get('apr_p'+id+'_europa_stats',{}))},
+ {id:'cuerpo',n:'Huesos y músculos',pct:id=>bPctOf(RAW.get('apr_p'+id+'_cuerpo_stats',{}))}];
 let lbMod='tablas';
 function rankStart(){show('rank');rankRender()}
 function rankRender(){$('#lbTabs').innerHTML=RANKMODS.map(m=>`<button class="${m.id===lbMod?'on':''}" data-m="${m.id}">${m.n}</button>`).join('');
@@ -891,12 +1007,283 @@ function rankRender(){$('#lbTabs').innerHTML=RANKMODS.map(m=>`<button class="${m
  $('#lbList').innerHTML=rows.map((r,i)=>`<div class="lbrow ${r.p.id===pid?'me':''}"><span class="pos" style="background:${['#ffc12e','#d3d9ea','#f0b27a'][i]||'var(--soft2)'}">${i+1}</span>${avatar(r.p)}<span class="nm">${esc(r.p.name)}</span><span>★ ${r.s}</span><span>${r.pc}%</span></div>`).join('')
   +(profiles.length<2?'<p class="muted" style="margin:12px 4px 0">Solo hay un jugador. Añade más tocando el icono de arriba a la derecha.</p>':'')}
 
+/* ================= MÓDULO: HUESOS Y MÚSCULOS ================= */
+/* Dibujos propios: figura centrada en x=200; MIR() copia el lado izquierdo en espejo */
+const MIR=s=>s+`<g transform="matrix(-1 0 0 1 400 0)">${s}</g>`;
+const SF='style="fill:var(--f);stroke:var(--o);stroke-width:1.5"';
+const LN=(x1,y1,x2,y2,w)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" style="stroke:var(--o);stroke-width:${w+3};stroke-linecap:round"/><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" style="stroke:var(--f);stroke-width:${w};stroke-linecap:round"/>`;
+const BONE=(x1,y1,x2,y2,w)=>{const r=(w*.72).toFixed(1),r2=(w*.72+1.5).toFixed(1);return `<circle cx="${x1}" cy="${y1}" r="${r2}" style="fill:var(--o)"/><circle cx="${x2}" cy="${y2}" r="${r2}" style="fill:var(--o)"/>${LN(x1,y1,x2,y2,w)}<circle cx="${x1}" cy="${y1}" r="${r}" style="fill:var(--f)"/><circle cx="${x2}" cy="${y2}" r="${r}" style="fill:var(--f)"/>`};
+const DOTS=(pts,r)=>pts.map(([x,y])=>`<circle cx="${x}" cy="${y}" r="${r}" ${SF}/>`).join('');
+const SIL=(()=>{const st='style="fill:none;stroke:var(--sil);stroke-linecap:round;stroke-linejoin:round;stroke-width:';
+ const one=`<polyline points="150,172 126,300 108,410" ${st}30"/><ellipse cx="104" cy="452" rx="16" ry="30" style="fill:var(--sil)"/><polyline points="176,392 166,545 164,690" ${st}42"/><ellipse cx="158" cy="722" rx="18" ry="28" style="fill:var(--sil)"/>`;
+ return `<g class="sil"><ellipse cx="200" cy="70" rx="46" ry="54" style="fill:var(--sil)"/><rect x="180" y="110" width="40" height="56" rx="12" style="fill:var(--sil)"/><path d="M146,160 Q200,148 254,160 Q268,166 266,190 L262,300 Q268,350 262,396 L138,396 Q132,350 138,300 L134,190 Q132,166 146,160Z" style="fill:var(--sil)"/>${MIR(one)}</g>`})();
+const RIBS=(()=>{let o='',f='';for(let i=0;i<7;i++){const y=180+i*15,d=`M192,${y} C166,${y-8} 146,${y+2} 148,${y+18} C149,${y+28} 160,${y+31} ${172-i*1.5},${y+29}`;o+=`<path d="${d}" style="fill:none;stroke:var(--o);stroke-width:8.5;stroke-linecap:round"/>`;f+=`<path d="${d}" style="fill:none;stroke:var(--f);stroke-width:5.5;stroke-linecap:round"/>`}return MIR(o+f)})();
+const IVORY='#efe6d2',IVO='#a8977a';
+const PELT=s=>`<g transform="translate(40,0)">${s}</g>`;
+const FIGS={
+ esq:{n:'Esqueleto',vb:[-12,0,424,775],base:SIL+`<path d="M167,70 C185,64 215,64 233,70 L235,110 L165,110Z" fill="${IVORY}" stroke="${IVO}" stroke-width="1.5"/>`,
+  top:`<g class="deco"><circle cx="182" cy="86" r="10" fill="#2b2b3a"/><circle cx="218" cy="86" r="10" fill="#2b2b3a"/><path d="M200,94 L194,106 L206,106Z" fill="#2b2b3a"/></g>`,
+  parts:{
+   omoplato:MIR(`<path d="M150,172 L180,178 L160,232 Z" ${SF}/>`),
+   vertebra:[134,146,158,298,311,324,337,350,363].map(y=>`<rect x="191" y="${y}" width="18" height="10" rx="3" ${SF}/>`).join(''),
+   pelvis:MIR(`<path d="M198,372 C186,360 164,350 150,366 C140,384 146,404 162,414 C174,420 186,424 198,426Z" ${SF}/>`)+`<path d="M189,372 L211,372 L206,404 L194,404Z" ${SF}/>`,
+   costilla:RIBS,
+   esternon:`<rect x="192" y="170" width="16" height="92" rx="7" ${SF}/><path d="M194,262 L206,262 L200,276Z" ${SF}/>`,
+   clavicula:MIR(BONE(194,166,152,160,6)),
+   parietal:`<path d="M156,50 C162,16 238,16 244,50 C226,40 174,40 156,50Z" ${SF}/>`,
+   frontal:`<path d="M156,50 C174,40 226,40 244,50 L245,72 C228,64 172,64 155,72Z" ${SF}/>`,
+   temporal:MIR(`<path d="M155,72 L151,98 C150,108 158,114 165,110 L167,76 Z" ${SF}/>`),
+   maxilar:`<path d="M166,108 L234,108 L230,128 Q200,148 170,128Z" ${SF}/><path d="M178,115 H222 M180,122 H220" stroke="${IVO}" stroke-width="1.5"/>`,
+   humero:MIR(BONE(152,174,128,296,12)),
+   radio:MIR(BONE(118,310,102,404,6)),
+   cubito:MIR(BONE(132,308,116,406,7)),
+   carpo:MIR(DOTS([[100,418],[108,415],[116,418],[103,426],[111,425],[119,427]],4.2)),
+   metacarpo:MIR([0,1,2,3,4].map(j=>LN(96+j*6.5,433,90+j*8,456,3.5)).join('')),
+   falmano:MIR([0,1,2,3,4].map(j=>{const x=90+j*8;return j===0?LN(x,462,x-3,474,3):LN(x,461,x-1,473,3)+LN(x-1,478,x-2,490,2.6)}).join('')),
+   femur:MIR(BONE(178,410,166,536,14)),
+   rotula:MIR(`<ellipse cx="165" cy="551" rx="9" ry="10" ${SF}/>`),
+   tibia:MIR(BONE(170,566,167,680,11)),
+   perone:MIR(BONE(150,570,151,678,5)),
+   tarso:MIR(DOTS([[154,694],[163,692],[172,695],[158,703],[167,703]],5)),
+   metatarso:MIR([0,1,2,3,4].map(j=>LN(150+j*6,710,146+j*7.5,729,3.5)).join('')),
+   falpie:MIR([0,1,2,3,4].map(j=>LN(146+j*7.5,735,145+j*7.8,746,3)).join(''))}},
+ pel:{n:'Pelvis',vb:[-12,0,504,340],
+  base:PELT([10,32,54,76].map(y=>`<rect x="182" y="${y}" width="36" height="17" rx="5" fill="${IVORY}" stroke="${IVO}"/><rect x="160" y="${y+5}" width="80" height="7" rx="3" fill="${IVORY}" stroke="${IVO}"/>`).join('')+MIR(`<rect x="80" y="232" width="36" height="110" rx="14" fill="${IVORY}" stroke="${IVO}"/><path d="M98,240 L118,222" stroke="${IVO}" stroke-width="22" stroke-linecap="round"/><path d="M98,240 L118,222" stroke="${IVORY}" stroke-width="19" stroke-linecap="round"/><circle cx="122" cy="216" r="21" fill="${IVORY}" stroke="${IVO}"/>`)),
+  top:PELT(`<g class="deco">${MIR(`<ellipse cx="166" cy="252" rx="13" ry="9" fill="var(--card)"/>`)}${[[190,128],[210,128],[192,152],[208,152],[194,176],[206,176]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="3" fill="#6b5d4a"/>`).join('')}</g>`),
+  parts:{
+   ilion:PELT(MIR(`<path d="M196,98 C172,70 140,42 102,50 C70,58 62,108 78,146 C90,172 118,188 150,196 C160,170 176,142 196,128Z" ${SF}/>`)),
+   sacro:PELT(`<path d="M168,100 L232,100 L226,168 L210,204 L190,204 L174,168Z" ${SF}/>`),
+   coccix:PELT(`<path d="M190,206 L210,206 L206,224 L200,234 L194,224Z" ${SF}/>`),
+   pubis:PELT(MIR(`<path d="M148,198 C166,204 184,214 197,230 L197,248 C180,240 160,232 140,226Z" ${SF}/>`)),
+   isquion:PELT(MIR(`<path d="M140,228 C160,234 180,242 196,250 C192,274 170,290 150,286 C130,282 122,262 128,242Z" ${SF}/>`))}},
+ musF:{n:'Músculos (delante)',vb:[-12,0,424,775],base:SIL,
+  top:`<g class="deco"><circle cx="182" cy="82" r="3" fill="#2b2b3a"/><circle cx="218" cy="82" r="3" fill="#2b2b3a"/><path d="M200,88 L196,98 L203,98" fill="none" stroke="#6b6b80" stroke-width="2"/></g>`,
+  parts:{
+   m_frontal:`<path d="M162,44 Q200,20 238,44 L236,60 Q200,52 164,60Z" ${SF}/>`,
+   orbp:MIR(`<ellipse cx="182" cy="82" rx="12" ry="9" style="fill:none;stroke:var(--f);stroke-width:6;pointer-events:all"/>`),
+   orbl:`<ellipse cx="200" cy="110" rx="15" ry="8" style="fill:none;stroke:var(--f);stroke-width:6;pointer-events:all"/>`,
+   maset:MIR(`<ellipse cx="170" cy="103" rx="7" ry="13" transform="rotate(-8 170 103)" ${SF}/>`),
+   ecm:MIR(LN(178,116,196,160,8)),
+   deltoides:MIR(`<path d="M148,160 C128,164 118,186 122,214 C134,208 148,190 160,168Z" ${SF}/>`),
+   pectoral:MIR(`<path d="M198,170 L162,172 C152,182 152,206 162,214 C180,218 196,214 198,206Z" ${SF}/>`),
+   biceps:MIR(`<ellipse cx="135" cy="248" rx="11" ry="32" transform="rotate(12 135 248)" ${SF}/>`),
+   abdominal:[0,1,2].map(r=>[0,1].map(c=>`<rect x="${181+c*20}" y="${226+r*25}" width="18" height="22" rx="6" ${SF}/>`).join('')).join(''),
+   cuadriceps:MIR(`<ellipse cx="172" cy="470" rx="20" ry="60" transform="rotate(4 172 470)" ${SF}/>`),
+   tibial:MIR(`<ellipse cx="164" cy="620" rx="8" ry="46" ${SF}/>`)}},
+ musB:{n:'Músculos (detrás)',vb:[-12,0,424,775],base:SIL+`<line x1="200" y1="160" x2="200" y2="380" stroke="rgba(0,0,0,.12)" stroke-width="3"/>`,top:'',
+  parts:{
+   trapecio:`<path d="M200,116 L230,160 L258,168 L200,262 L142,168 L170,160Z" ${SF}/>`,
+   dorsal:MIR(`<path d="M146,200 C140,244 150,284 178,322 L196,302 L196,244 C178,238 160,222 146,200Z" ${SF}/>`),
+   triceps:MIR(`<ellipse cx="135" cy="248" rx="11" ry="32" transform="rotate(12 135 248)" ${SF}/>`),
+   gluteo:MIR(`<ellipse cx="178" cy="404" rx="23" ry="27" ${SF}/>`),
+   isquio:MIR(`<ellipse cx="172" cy="492" rx="17" ry="54" ${SF}/>`),
+   gemelo:MIR(`<ellipse cx="165" cy="600" rx="14" ry="36" ${SF}/>`)}}};
+/* parte: [id, figura, artículo, nombre, etiqueta (| = salto), lado, y etiqueta, x ancla, y ancla, explicación] */
+const BP=[
+ ['parietal','esq','el','Parietal','parietal','R',28,222,32,'Forma la parte de arriba y los lados del cráneo. Tenemos dos.'],
+ ['frontal','esq','el','Frontal','frontal','L',58,182,55,'Es el hueso de la frente. Protege la parte delantera del cerebro.'],
+ ['temporal','esq','el','Temporal','temporal','R',92,246,92,'Está a los lados de la cabeza, junto a las orejas. Dentro está el oído.'],
+ ['maxilar','esq','el','Maxilar','maxilar','L',124,180,126,'Son los huesos de la boca donde van los dientes. El de abajo (la mandíbula) es el único hueso de la cabeza que se mueve.'],
+ ['clavicula','esq','la','Clavícula','clavícula','L',162,172,163,'Une el esternón con el hombro. Se nota justo debajo del cuello.'],
+ ['omoplato','esq','el','Omoplato','omoplato','R',196,240,198,'Hueso plano y en forma de triángulo, detrás del hombro, en la espalda.'],
+ ['costilla','esq','la','Costilla','costilla','L',228,152,228,'Tenemos 12 pares. Forman una jaula que protege el corazón y los pulmones.'],
+ ['humero','esq','el','Húmero','húmero','R',244,264,244,'Es el hueso largo del brazo. Va del hombro al codo.'],
+ ['esternon','esq','el','Esternón','esternón','L',268,200,244,'Hueso plano en el centro del pecho. A él se unen las costillas.'],
+ ['cubito','esq','el','Cúbito','cúbito','R',330,276,350,'Hueso del antebrazo que está en el lado del dedo meñique.'],
+ ['vertebra','esq','la','Vértebra','vértebra','L',336,191,330,'Huesecillos que, uno encima de otro, forman la columna vertebral. Tenemos 33.'],
+ ['radio','esq','el','Radio','radio','R',374,292,372,'Hueso del antebrazo que está en el lado del dedo pulgar.'],
+ ['pelvis','esq','la','Pelvis','pelvis','L',392,158,392,'Hueso grande de la cadera. Sujeta el tronco y une las piernas con la columna.'],
+ ['carpo','esq','el','Carpo','carpo','R',420,292,421,'Son los huesecillos de la muñeca. Tenemos 8 en cada mano.'],
+ ['metacarpo','esq','el','Metacarpo','metacarpo','R',454,296,446,'Son los huesos de la palma de la mano. Hay 5, uno por dedo.'],
+ ['falmano','esq','las','Falanges de la mano','falanges (mano)','R',490,294,482,'Son los huesos de los dedos de la mano. Cada dedo tiene 3, menos el pulgar, que tiene 2.'],
+ ['femur','esq','el','Fémur','fémur','L',470,171,470,'Es el hueso más largo del cuerpo. Va de la cadera a la rodilla.'],
+ ['rotula','esq','la','Rótula','rótula','L',551,156,551,'Hueso pequeño y redondo que protege la rodilla por delante.'],
+ ['perone','esq','el','Peroné','peroné','R',612,249,612,'Hueso fino de la pierna, por fuera de la tibia.'],
+ ['tibia','esq','la','Tibia','tibia','L',632,168,632,'Hueso grueso de la pierna, por delante. Es la espinilla.'],
+ ['tarso','esq','el','Tarso','tarso','R',690,237,694,'Son los huesos del tobillo y del talón. Tenemos 7 en cada pie.'],
+ ['metatarso','esq','el','Metatarso','metatarso','R',722,239,717,'Son los huesos de la planta del pie. Hay 5.'],
+ ['falpie','esq','las','Falanges del pie','falanges (pie)','R',754,236,741,'Son los huesos de los dedos del pie.'],
+ ['ilion','pel','el','Ilion','ilion','L',70,140,105,'Es la parte más grande de la pelvis: dos «alas» a los lados.'],
+ ['sacro','pel','el','Sacro','sacro','R',110,256,140,'Hueso con forma de triángulo al final de la columna, entre los dos iliones.'],
+ ['pubis','pel','el','Pubis','pubis','L',206,212,218,'Es la parte de delante y abajo de la pelvis.'],
+ ['coccix','pel','el','Cóccix','cóccix','R',232,244,222,'Es el final de la columna. Es pequeño, como una colita.'],
+ ['isquion','pel','el','Isquion','isquion','L',290,186,272,'Es la parte de abajo de la pelvis. Nos apoyamos en él al sentarnos.'],
+ ['m_frontal','musF','el','Frontal (músculo)','frontal','R',30,216,44,'Músculo de la frente. Sirve para levantar las cejas y arrugar la frente.'],
+ ['orbp','musF','el','Orbicular de los párpados','orbicular de|los párpados','L',72,172,84,'Rodea los ojos. Sirve para cerrar los párpados y guiñar un ojo.'],
+ ['orbl','musF','el','Orbicular de los labios','orbicular de|los labios','R',96,214,112,'Rodea la boca. Sirve para cerrar los labios, dar besos y silbar.'],
+ ['maset','musF','el','Masetero','masetero','L',122,168,104,'Está en la mejilla, junto a la mandíbula. Sirve para masticar y es muy fuerte.'],
+ ['ecm','musF','el','Esternocleidomastoideo','esternocleido-|mastoideo','R',150,212,140,'Está en el cuello. Sirve para girar e inclinar la cabeza.'],
+ ['deltoides','musF','el','Deltoides','deltoides','L',180,134,186,'Cubre el hombro. Sirve para levantar el brazo.'],
+ ['pectoral','musF','el','Pectoral','pectoral','R',212,236,196,'Está en el pecho. Sirve para mover los brazos hacia delante, como al abrazar.'],
+ ['biceps','musF','el','Bíceps','bíceps','L',252,132,250,'Está delante del brazo. Sirve para doblar el codo.'],
+ ['abdominal','musF','el','Abdominal','abdominal','R',292,211,288,'Está en la barriga. Sirve para doblar el tronco y protege lo que hay dentro.'],
+ ['cuadriceps','musF','el','Cuádriceps','cuádriceps','L',472,170,472,'Está delante del muslo. Sirve para estirar la pierna y dar patadas.'],
+ ['tibial','musF','el','Tibial','tibial','L',622,164,622,'Está delante de la pierna. Sirve para levantar la punta del pie.'],
+ ['trapecio','musB','el','Trapecio','trapecio','R',170,224,190,'Está arriba en la espalda y en el cuello. Sirve para mover los hombros y la cabeza.'],
+ ['triceps','musB','el','Tríceps','tríceps','R',252,266,250,'Está detrás del brazo. Sirve para estirar el codo.'],
+ ['dorsal','musB','el','Dorsal','dorsal','L',272,164,262,'Está a los lados de la espalda. Sirve para bajar los brazos y tirar, como al trepar.'],
+ ['gluteo','musB','el','Glúteo','glúteo','L',406,178,404,'Es el músculo del culete. Sirve para andar, correr y levantarse.'],
+ ['isquio','musB','los','Isquiotibiales','isquiotibiales','L',496,172,496,'Están detrás del muslo (entre ellos, el bíceps femoral). Sirven para doblar la rodilla.'],
+ ['gemelo','musB','el','Gemelo','gemelo','R',602,235,600,'Está en la pantorrilla. Sirve para ponerse de puntillas y saltar.']
+].map(([k,fig,art,n,lab,side,ly,ax,ay,d])=>({k,fig,art,n,lab:lab.split('|'),side,ly,ax,ay,d,cat:fig.startsWith('mus')?'m':'h'}));
+const BPK=Object.fromEntries(BP.map(p=>[p.k,p]));
+const PAL_H=['#ffd166','#8ecae6','#95d5b2','#ffadad','#cdb4db','#ffc59e','#a0e7e5','#f9c6a5'],PAL_M=['#ff6b6b','#ff9f43','#f368e0','#e84393','#fd79a8','#ff7675','#e17055','#fdcb6e'];
+BP.forEach((p,i)=>p.col=(p.cat==='h'?PAL_H:PAL_M)[i%8]);
+const neutralB=p=>p.cat==='h'?IVORY:'#d9a5a5';
+const outB=p=>p.cat==='h'?IVO:'#9b4b4b';
+/* o.only · o.fill(p,on) · o.labels:'all'|'none'|'slots' · o.shown:Set · o.placed:Set · o.hl:id · o.vb */
+function figSVG(f,o={}){const F=FIGS[f],vb=o.vb||F.vb;let s=`<svg class="fig zm" viewBox="${vb.join(' ')}" role="img" aria-label="${F.n}">${F.base}`,labs='';
+ for(const p of BP){if(p.fig!==f)continue;const on=!o.only||o.only.includes(p.k),col=o.fill?o.fill(p,on):(on?p.col:neutralB(p));
+  s+=`<g class="tile${on?'':' off'}" data-c="${p.k}" style="--f:${col};--o:${outB(p)}"><title>${on&&o.labels!=='none'?p.n:'Parte del cuerpo'}</title>${F.parts[p.k]}</g>`;
+  const mode=!on?'':o.labels==='all'?'show':o.labels==='slots'?(o.placed&&o.placed.has(p.k)?'show placed':(o.slotFor&&!o.slotFor.includes(p.k)?'':'slot')):(o.shown&&o.shown.has(p.k)?'show':'');
+  if(mode){const h=24+(p.lab.length-1)*15,bx=p.side==='L'?-8:316,lx=p.side==='L'?84:316,y=p.ly-h/2;
+   labs+=`<g class="lab ${mode}${o.hl===p.k?' hl':''}" data-c="${p.k}"><line x1="${lx}" y1="${p.ly}" x2="${p.ax}" y2="${p.ay}"/><circle cx="${p.ax}" cy="${p.ay}" r="3.5"/><rect x="${bx}" y="${y}" width="92" height="${h}" rx="9"/>`+
+    (mode.startsWith('show')?p.lab.map((t,i)=>`<text x="${bx+46}" y="${y+17+i*15}" text-anchor="middle"${t.length>11?' textLength="84" lengthAdjust="spacingAndGlyphs"':''}>${t}</text>`).join(''):'')+`</g>`}}
+ return s+(F.top||'')+`<g class="labs">${labs}</g></svg>`}
+
+const BCATS=[{k:'esq',n:'Huesos',c:'#e0a800'},{k:'pel',n:'Pelvis',c:'#ff8a00'},{k:'mus',n:'Músculos',c:'#ff4f8b'}];
+const catOf=f=>f.startsWith('mus')?'mus':f;
+const BS={get:(k,d)=>RAW.get('apr_p'+pid+'_cuerpo_'+k,d),set:(k,v)=>RAW.set('apr_p'+pid+'_cuerpo_'+k,v)};
+let bcfg={cats:['esq','pel','mus']},bst={};
+function bLoad(){bcfg=Object.assign({cats:['esq','pel','mus']},BS.get('cfg',{}));bst=BS.get('stats',{})}
+const bSaveCfg=()=>BS.set('cfg',bcfg);
+const bList=()=>BP.filter(p=>bcfg.cats.includes(catOf(p.fig)));
+const bFigs=()=>['esq','pel','musF','musB'].filter(f=>bcfg.cats.includes(catOf(f)));
+function bRec(key,good){const s=bst[key]||[0,0,0];s[good?0:1]++;s[2]=good?s[2]+1:0;bst[key]=s;BS.set('stats',bst)}
+function bPick(kind,L,excl=[]){L=L.filter(p=>!excl.includes(p.k));const w=p=>{const s=bst[kind+':'+p.k]||[0,0,0];return Math.max(.4,1+s[1]*2-s[0]*.3-(s[2]>=5?.6:0))};
+ let r=Math.random()*L.reduce((a,p)=>a+w(p),0);for(const p of L){r-=w(p);if(r<=0)return p}return L[0]}
+function bPctOf(S){let g=0;for(const p of BP)for(const t of['loc','id'])if((S[t+':'+p.k]||[0,0,0])[2]>=5)g++;return Math.round(g/(BP.length*2)*100)}
+const art=p=>p.art+' '+p.n.toLowerCase();
+const kindName=p=>p.cat==='h'?'hueso':'músculo';
+function drawFig(box,f,o){$(box).innerHTML=figSVG(f,o);const F=FIGS[f];zoomable(box,[...(o.vb||F.vb)],F.vb)}
+function figTap(box,fn){$(box).onclick=e=>{const sv=$(box+' svg');if(sv&&sv.dataset.panned==='1'){sv.dataset.panned='';return}const g=e.target.closest&&e.target.closest('.tile:not(.off),.lab');if(g)fn(g.dataset.c,g)}}
+const figTabs=(id,list,cur,fn)=>{$(id).innerHTML=list.map(f=>`<button class="${f===cur?'on':''}" data-f="${f}">${FIGS[f].n}</button>`).join('');$$(id+' button').forEach(b=>b.onclick=()=>fn(b.dataset.f))};
+function dragTag(e,el,box,drop,tap){if(e.button>0)return;e.preventDefault();const sx=e.clientX,sy=e.clientY;let ghost=null;
+ const mv=ev=>{if(!ghost&&Math.hypot(ev.clientX-sx,ev.clientY-sy)>8){ghost=el.cloneNode(true);ghost.classList.add('drag');document.body.appendChild(ghost);el.style.opacity=.35}if(ghost){ghost.style.left=ev.clientX+'px';ghost.style.top=ev.clientY+'px';if(ev.clientY>innerHeight-70)scrollBy(0,14);else if(ev.clientY<90)scrollBy(0,-14);}};
+ const up=ev=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);removeEventListener('pointercancel',up);
+  if(ghost){ghost.remove();el.style.opacity='';const t=document.elementFromPoint(ev.clientX,ev.clientY),g=t&&t.closest&&t.closest(box+' .tile:not(.off),'+box+' .lab');drop(g?g.dataset.c:null)}else tap()};
+ addEventListener('pointermove',mv);addEventListener('pointerup',up);addEventListener('pointercancel',up)}
+
+/* ---------- menú ---------- */
+const boneIcon=(c='#efe6d2')=>`<svg viewBox="0 0 90 90"><rect x="2" y="2" width="86" height="86" rx="20" fill="#fff" opacity=".55"/><g transform="rotate(-35 45 45)"><rect x="22" y="38" width="46" height="14" rx="7" fill="${c}" stroke="#8a7a62" stroke-width="2.5"/>${[[22,38],[22,52],[68,38],[68,52]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="9" fill="${c}" stroke="#8a7a62" stroke-width="2.5"/>`).join('')}<rect x="22" y="39.5" width="46" height="11" fill="${c}"/></g></svg>`;
+const miniFigIcon=(f,ks,vb)=>figSVG(f,{labels:'none',fill:(p,on)=>ks.includes(p.k)?p.col:neutralB(p),vb}).replace('class="fig zm"','class="fig" width="90" height="90"');
+const BMODES=[
+ {id:'explore',t:'Explorar',d:'Toca cada hueso o músculo y aprende cómo se llama y para qué sirve.',bg:'#ffc12e',icon:()=>miniFigIcon('esq',['humero','radio','cubito','costilla','clavicula','femur'],[60,120,280,280])},
+ {id:'where',t:'¿Dónde está?',d:'Te dicen un nombre y lo tocas en el dibujo.',bg:'#8fb4ff',icon:()=>miniFigIcon('musF',['biceps','deltoides','pectoral'],[80,130,240,240])},
+ {id:'place',t:'Pon las etiquetas',d:'Arrastra cada nombre a su cajita, como en el cuaderno.',bg:'#8fe0b5',icon:()=>`<svg viewBox="0 0 90 90"><rect x="2" y="2" width="86" height="86" rx="20" fill="#fff" opacity=".55"/><rect x="10" y="20" width="44" height="16" rx="5" fill="#fff" stroke="#5a6290" stroke-dasharray="4 3"/><line x1="54" y1="28" x2="72" y2="40" stroke="#5a6290" stroke-width="2"/><circle cx="72" cy="40" r="4" fill="#1b2147"/><rect x="16" y="52" width="50" height="20" rx="6" fill="#ffc12e" stroke="#1b2147" stroke-width="2.5" transform="rotate(-6 41 62)"/></svg>`},
+ {id:'quiz',t:'¿Qué es?',d:'Mira la parte marcada o lee la pista y elige su nombre.',bg:'#ff9cbd',icon:()=>`<svg viewBox="0 0 90 90"><rect x="2" y="2" width="86" height="86" rx="20" fill="#fff" opacity=".55"/><circle cx="45" cy="45" r="26" fill="#ff4f8b"/><text x="45" y="58" text-anchor="middle" font-family="Baloo 2,system-ui" font-weight="800" font-size="40" fill="#fff">?</text></svg>`},
+ {id:'sort',t:'¿Hueso o músculo?',d:'Contrarreloj: clasifica cada nombre lo más rápido que puedas.',bg:'#ffb19e',icon:()=>`<svg viewBox="0 0 90 90">${boneIcon().replace(/<\/?svg[^>]*>/g,'')}<circle cx="64" cy="64" r="16" fill="#ff6b6b" stroke="#9b4b4b" stroke-width="2.5"/></svg>`},
+ {id:'mem',t:'Parejas',d:'Junta cada nombre con su dibujo.',bg:'#a0e7e5',icon:()=>ICONS.memory.replace('>12<','>?<')},
+ {id:'prog',t:'Mi progreso',d:'Mira qué huesos y músculos dominas.',bg:'#c9b6ff',icon:()=>ICONS.progress}];
+function bHome(){show('body');bRenderHome()}
+function bRenderHome(){
+ $('#bCats').innerHTML=BCATS.map(c=>`<button class="chip ${bcfg.cats.includes(c.k)?'on':''}" data-k="${c.k}" aria-pressed="${bcfg.cats.includes(c.k)}"><span class="dot" style="background:${c.c}"></span>${c.n}</button>`).join('')+`<button class="chip" id="bAll">Todo</button><button class="chip" id="bNone">Ninguno</button>`;
+ $$('#bCats [data-k]').forEach(b=>b.onclick=()=>{const k=b.dataset.k;bcfg.cats=bcfg.cats.includes(k)?bcfg.cats.filter(x=>x!==k):[...bcfg.cats,k];bSaveCfg();bRenderHome()});
+ $('#bAll').onclick=()=>{bcfg.cats=BCATS.map(c=>c.k);bSaveCfg();bRenderHome()};$('#bNone').onclick=()=>{bcfg.cats=[];bSaveCfg();bRenderHome()};
+ const n=bList().length,li=$('#bInfo');li.classList.toggle('warn',!n);li.textContent=n?`Entran ${n} partes: ${bcfg.cats.map(k=>BCATS.find(c=>c.k===k).n.toLowerCase()).join(', ')}.`:'Elige al menos un tema para jugar.';
+ if(!$('#bModes').children.length){$('#bModes').innerHTML=BMODES.map(m=>`<button class="mode" data-m="${m.id}" style="background:${m.bg}">${m.icon()}<div><h3>${m.t}</h3><p>${m.d}</p></div></button>`).join('');
+  $$('#bModes [data-m]').forEach(b=>b.onclick=()=>{if(b.dataset.m!=='prog'&&b.dataset.m!=='sort'&&!bList().length){const li=$('#bInfo');li.classList.add('warn');$('#bCats').classList.remove('nudge');void $('#bCats').offsetWidth;$('#bCats').classList.add('nudge');beep('ko');return}
+   ({explore:bxStart,where:bwStart,place:bpStart,quiz:bqStart,sort:bsStart,mem:bmStart,prog:bgStart})[b.dataset.m]()})}}
+
+/* ---------- explorar ---------- */
+const BX={fig:'esq',sel:null};
+function bxStart(){show('bexp');if(!bFigs().includes(BX.fig))BX.fig=bFigs()[0];BX.sel=null;bxRender()}
+function bxRender(){mapRefresh=null;figTabs('#bxTabs',bFigs(),BX.fig,f=>{BX.fig=f;BX.sel=null;bxRender()});
+ drawFig('#bxFig',BX.fig,{labels:'all',hl:BX.sel});if(BX.sel){const g=$(`#bxFig .tile[data-c="${BX.sel}"]`);if(g)g.classList.add('sel')}
+ const p=BX.sel&&BPK[BX.sel];
+ $('#bxInfo').innerHTML=p?`<span class="zn" style="background:${p.cat==='h'?'#e0a800':'#ff4f8b'}">${p.cat==='h'?'Hueso':'Músculo'}</span><h3 class="capn" style="color:var(--ink);margin:10px 0 10px;font-size:clamp(28px,6vw,40px);overflow-wrap:anywhere">${p.n}</h3><p style="margin:0;font-size:18px;font-weight:700">${p.d}</p>`
+  :`<h3 style="font-size:24px">Toca una parte del dibujo</h3><p class="muted">O toca su nombre. Verás qué es y para qué sirve.</p>`;
+ $('#bxList').innerHTML=BP.filter(q=>q.fig===BX.fig).map(q=>`<button data-c="${q.k}" class="${q.k===BX.sel?'on':''}" style="border-left-color:${q.col}">${q.n}<br><span>${q.cat==='h'?'Hueso':'Músculo'}</span></button>`).join('');
+ $$('#bxList button').forEach(b=>b.onclick=()=>{BX.sel=b.dataset.c;bxRender();$('#bxFig').scrollIntoView({behavior:'smooth',block:'nearest'})})}
+figTap('#bxFig',k=>{BX.sel=k;bxRender();if(innerWidth<760)$('#bxInfo').scrollIntoView({behavior:'smooth',block:'nearest'})});
+
+/* ---------- ¿dónde está? ---------- */
+const BW={};
+function bwStart(){show('bwhere');Object.assign(BW,{t:G,i:0,n:Math.min(10,Math.max(5,bList().length)),ok:0,found:new Set(),last:null,busy:true});$('#bwOk').textContent=0;bwNext()}
+function bwRender(extra=[]){const f=BW.q.fig,sh=new Set([...BW.found,...extra]);$('#bwFigName').textContent=FIGS[f].n;
+ drawFig('#bwFig',f,{only:bList().map(p=>p.k),labels:'shown',shown:sh,fill:(p,on)=>BW.found.has(p.k)?p.col:neutralB(p)})}
+function bwNext(){if(BW.t!==G)return;if(BW.i>=BW.n)return bwEnd();let p,g=0;do{p=bPick('loc',bList());g++}while(g<15&&(p.k===BW.last||BW.found.has(p.k)));BW.last=p.k;BW.q=p;
+ $('#bwCount').textContent=`${BW.i+1} de ${BW.n}`;$('#bwQ').innerHTML=`¿Dónde está ${p.art} <em>${p.n.toLowerCase()}</em>?<small>Tócalo en el dibujo</small>`;
+ $('#bwFb').textContent='';$('#bwFb').className='fb';bwRender();BW.busy=false}
+figTap('#bwFig',k=>{if(BW.busy||BW.t!==G)return;BW.busy=true;const p=BW.q,fb=$('#bwFb');BW.i++;
+ if(k===p.k){bRec('loc:'+p.k,true);BW.ok++;$('#bwOk').textContent=BW.ok;BW.found.add(k);bwRender();$(`#bwFig .tile[data-c="${k}"]`).classList.add('good');beep('ok');fb.className='fb good';fb.textContent=`¡Sí! ${p.n}`;setTimeout(bwNext,1100)}
+ else{bRec('loc:'+p.k,false);beep('ko');bwRender([k,p.k]);$(`#bwFig .tile[data-c="${k}"]`).classList.add('bad');$(`#bwFig .tile[data-c="${p.k}"]`).classList.add('hint');fb.className='fb bad';fb.textContent=`Eso es ${art(BPK[k])}. ${p.n} es lo que parpadea.`;setTimeout(bwNext,2400)}});
+function bwEnd(){const f=BW.ok/BW.n,st=f>=.9?3:f>=.7?2:f>=.4?1:0;endGame(f===1?'¡Todo encontrado!':'¡Fin!',`${BW.ok} de ${BW.n} acertadas`,st,bwStart,'',bHome,'cuerpo')}
+
+/* ---------- pon las etiquetas ---------- */
+const BL={figi:0};
+function bpStart(){show('bplace');const figs=bFigs();BL.figi=(BL.figi+1)%figs.length;const f=figs[BL.figi]||figs[0],L=bList().filter(p=>p.fig===f),n=Math.min(8,L.length),picks=[];
+ while(picks.length<n)picks.push(bPick('loc',L,picks).k);
+ Object.assign(BL,{t:G,f,picks,left:shuffle([...picks]),placed:new Set(),ko:0,failed:new Set(),sel:null});$('#blFb').textContent='';$('#blFigName').textContent=FIGS[f].n;blRender()}
+function blRender(){$('#blKo').textContent=BL.ko;$('#blLeft').textContent=BL.left.length;
+ $('#blTray').innerHTML=BL.left.map(k=>`<button class="tag ${BL.sel===k?'sel':''}" data-k="${k}">${BPK[k].n}</button>`).join('');
+ drawFig('#blFig',BL.f,{only:BL.picks,labels:'slots',placed:BL.placed,fill:(p,on)=>BL.placed.has(p.k)?p.col:neutralB(p)});
+ $$('#blTray .tag').forEach(el=>el.onpointerdown=e=>dragTag(e,el,'#blFig',code=>{if(code)blDrop(el.dataset.k,code);else{BL.sel=null;blRender()}},()=>{BL.sel=BL.sel===el.dataset.k?null:el.dataset.k;blRender()}))}
+figTap('#blFig',k=>{if(BL.sel)blDrop(BL.sel,k)});
+function blDrop(k,code){if(BL.t!==G||BL.placed.has(code))return;const fb=$('#blFb');
+ if(code===k){BL.placed.add(k);BL.left=BL.left.filter(x=>x!==k);BL.sel=null;if(!BL.failed.has(k))bRec('loc:'+k,true);beep('ok');fb.className='fb good';fb.textContent=`¡Bien! ${BPK[k].n}`;blRender();
+  if(!BL.left.length){const st=BL.ko<=1?3:BL.ko<=4?2:1;setTimeout(()=>{if(BL.t===G)endGame('¡Etiquetas puestas!',BL.ko?`Con ${BL.ko} ${BL.ko===1?'fallo':'fallos'}`:'¡Sin ningún fallo!',st,bpStart,'',bHome,'cuerpo')},700)}}
+ else{BL.ko++;if(!BL.failed.has(k)){BL.failed.add(k);bRec('loc:'+k,false)}beep('ko');fb.className='fb bad';fb.textContent=`Ahí no va ${art(BPK[k])}. ¡Prueba otra vez!`;BL.sel=k;blRender();const g=$(`#blFig .tile[data-c="${code}"]`);if(g)g.classList.add('bad');const tg=$(`#blTray .tag[data-k="${k}"]`);if(tg)tg.classList.add('no')}}
+
+/* ---------- ¿qué es? ---------- */
+const BQ={};
+function bqStart(){show('bquiz');Object.assign(BQ,{t:G,i:0,n:10,ok:0,last:null});bqNext()}
+function bqNext(){if(BQ.t!==G)return;if(BQ.i>=BQ.n)return bqEnd();const L=bList();let p,g=0;do{p=bPick('id',L);g++}while(g<15&&p.k===BQ.last&&L.length>1);BQ.last=p.k;
+ const kind=Math.random()<.55?'pic':'clue',fb=$('#bqFb');fb.textContent='';fb.className='fb';$('#bqCount').textContent=`Pregunta ${BQ.i+1} de ${BQ.n}`;
+ $('#bqQ').innerHTML=kind==='pic'?`¿Cómo se llama ${p.cat==='h'?'este hueso':'este músculo'}?`:`¿Qué ${kindName(p)} es?<small class="clue">${p.d}</small>`;
+ const drawQ=()=>drawFig('#bqFig',p.fig,{labels:'none',fill:(q,on)=>q.k===p.k?'#ff4f8b':neutralB(q)});
+ if(kind==='pic'){$('#bqFigC').hidden=false;drawQ();const g=$(`#bqFig .tile[data-c="${p.k}"]`);if(g)g.classList.add('sel')}else $('#bqFigC').hidden=true;
+ const pool=shuffle(BP.filter(q=>q.k!==p.k&&q.cat===p.cat&&q.n!==p.n)),same=pool.filter(q=>q.fig===p.fig),ops=shuffle([p,...[...same,...pool.filter(q=>q.fig!==p.fig)].slice(0,3)]);
+ $('#bqA').innerHTML=`<div class="opts txt">${ops.map(o=>`<button class="opt" data-k="${o.k}">${o.n}</button>`).join('')}</div>`;
+ let lock=false;$$('#bqA .opt').forEach(b=>b.onclick=()=>{if(lock||BQ.t!==G)return;lock=true;const good=b.dataset.k===p.k;bRec('id:'+p.k,good);BQ.i++;
+  b.classList.add(good?'good':'bad');if(!good)$$('#bqA .opt').forEach(o=>{if(o.dataset.k===p.k)o.classList.add('good')});
+  if(kind==='clue'){$('#bqFigC').hidden=false;drawQ()}
+  if(good){BQ.ok++;beep('ok');fb.className='fb good';fb.textContent=`¡Eso es! ${p.n}`;setTimeout(bqNext,1300)}else{beep('ko');fb.className='fb bad';fb.textContent=`Era ${art(p)}`;setTimeout(bqNext,2300)}})}
+function bqEnd(){const f=BQ.ok/BQ.n,st=f>=.9?3:f>=.7?2:f>=.4?1:0;endGame(f===1?'¡Todas bien!':'¡Fin!',`${BQ.ok} de ${BQ.n} acertadas`,st,bqStart,'',bHome,'cuerpo')}
+
+/* ---------- ¿hueso o músculo? (contrarreloj) ---------- */
+const BSQ={};const SORTDUR={tranquila:60,normal:45,rapida:35};
+function bsStart(){show('bsort');Object.assign(BSQ,{t:G,score:0,combo:0,ok:0,dur:SORTDUR[cfg.speed]||45,run:false,last:null});$('#bsScore').textContent=0;$('#bsSec').textContent=BSQ.dur;$('#bsBar').style.width='100%';$('#bsWord').textContent='';$('#bsFb').textContent='';
+ countdown($('#bsCd'),()=>{BSQ.end=performance.now()+BSQ.dur*1000;BSQ.run=true;raf=requestAnimationFrame(bsTick);bsNext()})}
+function bsTick(now){if(BSQ.t!==G||!BSQ.run)return;const left=Math.max(0,(BSQ.end-now)/1000);$('#bsSec').textContent=Math.ceil(left);$('#bsBar').style.width=(left/BSQ.dur*100)+'%';if(left<=0){BSQ.run=false;return bsEnd()}raf=requestAnimationFrame(bsTick)}
+function bsNext(){const L=BP.filter(p=>p.k!=='frontal'&&p.k!=='m_frontal');let p;do{p=L[Math.floor(Math.random()*L.length)]}while(p.k===BSQ.last);BSQ.last=p.k;BSQ.q=p;BSQ.lock=false;const w=$('#bsWord');w.textContent=p.n;w.classList.remove('in');void w.offsetWidth;w.classList.add('in')}
+function bsAns(c){if(!BSQ.run||BSQ.lock||BSQ.t!==G)return;const p=BSQ.q,fb=$('#bsFb');
+ if(p.cat===c){BSQ.combo++;BSQ.ok++;BSQ.score+=1+Math.floor(BSQ.combo/5);$('#bsScore').textContent=BSQ.score;beep('ok');fb.className='fb good';fb.textContent=BSQ.combo>=5?`¡Racha de ${BSQ.combo}!`:`¡Bien! ${p.n}: ${kindName(p)}`;bsNext()}
+ else{BSQ.combo=0;BSQ.lock=true;beep('ko');fb.className='fb bad';fb.textContent=`${p.n} es un ${kindName(p)}`;setTimeout(()=>{if(BSQ.t===G&&BSQ.run)bsNext()},1100)}}
+$('#bsH').onclick=()=>bsAns('h');$('#bsM').onclick=()=>bsAns('m');
+function bsEnd(){const k='sort_'+cfg.speed,best2=BS.get('best',{}),rec=BSQ.score>(best2[k]||0);if(rec){best2[k]=BSQ.score;BS.set('best',best2)}const s=BSQ.score,st=s>=22?3:s>=12?2:s>=5?1:0;
+ endGame(rec&&s?'¡Nuevo récord!':'¡Tiempo!',`${s} puntos · ${BSQ.ok} aciertos`,st,bsStart,`<p class="muted" style="margin:6px 0 0">Récord: ${best2[k]||s}</p>`,bHome,'cuerpo')}
+
+/* ---------- parejas: nombre y dibujo ---------- */
+const BMM={};
+function bmStart(){show('bmem');const L=bList(),n=Math.min(6,L.length),picks=[];while(picks.length<n){const p=bPick('id',L,picks.map(x=>x.k));if(!picks.some(x=>x.n===p.n))picks.push(p);else break}
+ const cards=[];picks.forEach((p,i)=>cards.push({id:i,p,pic:false},{id:i,p,pic:true}));shuffle(cards);
+ Object.assign(BMM,{t:G,cards,up:[],moves:0,pairs:0,lock:false,tot:picks.length});$('#bmMoves').textContent=0;$('#bmPairs').textContent=0;$('#bmTot').textContent=picks.length;
+ $('#bMem').innerHTML=cards.map((c,i)=>`<button class="mc" data-i="${i}" aria-label="Carta"><div class="in"><div class="b" style="background:#e0a800;box-shadow:0 5px 0 #a87e00">?</div><div class="f tx ${c.pic?'pic':''}">${c.pic?figSVG(c.p.fig,{labels:'none',fill:(q)=>q.k===c.p.k?'#ff4f8b':neutralB(q),vb:[c.p.ax-95,c.p.ay-110,190,220]}).replace('class="fig zm"','class="fig"'):`<small>${c.p.cat==='h'?'Hueso':'Músculo'}</small>${c.p.n}`}</div></div></button>`).join('');
+ $$('#bMem .mc').forEach(el=>el.onclick=()=>bmFlip(el))}
+function bmFlip(el){if(BMM.lock||BMM.t!==G||el.classList.contains('up')||el.classList.contains('done'))return;const c=BMM.cards[+el.dataset.i];el.classList.add('up');el.setAttribute('aria-label',c.pic?'Dibujo':c.p.n);BMM.up.push(el);beep('tick');
+ if(BMM.up.length<2)return;BMM.moves++;$('#bmMoves').textContent=BMM.moves;const[e1,e2]=BMM.up,c1=BMM.cards[+e1.dataset.i],c2=BMM.cards[+e2.dataset.i];BMM.up=[];
+ if(c1.id===c2.id){setTimeout(()=>{e1.classList.add('done');e2.classList.add('done');beep('ok')},300);bRec('id:'+c1.p.k,true);BMM.pairs++;$('#bmPairs').textContent=BMM.pairs;
+  if(BMM.pairs===BMM.tot){const st=BMM.moves<=BMM.tot+3?3:BMM.moves<=BMM.tot*2+2?2:1;setTimeout(()=>{if(BMM.t===G)endGame('¡Todas las parejas!',`En ${BMM.moves} intentos`,st,bmStart,'',bHome,'cuerpo')},800)}}
+ else{BMM.lock=true;setTimeout(()=>{e1.classList.remove('up');e2.classList.remove('up');BMM.lock=false},1200)}}
+
+/* ---------- progreso ---------- */
+const BG={fig:'esq'};
+const bCol=p=>{const a=bst['loc:'+p.k],b=bst['id:'+p.k];if(!a&&!b)return'var(--land2)';const g=s=>s&&s[2]>=5,r=s=>s&&s[2]===0&&s[1]>0;return g(a)&&g(b)?'#1fae66':(r(a)||r(b))?'#ff5a4e':'#ffc12e'};
+function bgStart(){show('bprog');const p=cur();$('#bgTitle').textContent=p?`Cuerpo de ${p.name}: ${bPctOf(bst)}%`:'Mi progreso';bgRender()}
+function bgRender(){figTabs('#bgTabs',['esq','pel','musF','musB'],BG.fig,f=>{BG.fig=f;bgRender()});drawFig('#bgFig',BG.fig,{labels:'all',fill:p=>bCol(p)});
+ $('#bgCats').innerHTML=BCATS.map(c=>{const L=BP.filter(p=>catOf(p.fig)===c.k);let g=0;for(const p of L)for(const t of['loc','id'])if((bst[t+':'+p.k]||[0,0,0])[2]>=5)g++;const pc=Math.round(g/(L.length*2)*100);
+  return `<div class="mrow"><span><span class="dot" style="background:${c.c}"></span>${c.n}</span><div class="mbar"><div style="width:${pc}%;background:${c.c}"></div></div><span style="text-align:right">${pc}%</span></div>`}).join('')}
+$('#bReset').onclick=()=>modal('<h2>¿Borrar el cuerpo humano?</h2><p>Se borra el progreso y las estrellas de este módulo para este jugador.</p>',[{t:'Sí, borrar',f:()=>{bst={};BS.set('stats',bst);BS.set('best',{});stars-=modStars(pid,'cuerpo');RAW.set('apr_p'+pid+'_stars_cuerpo',0);RAW.set('apr_p'+pid+'_stars',stars);$('#starN').textContent=stars;bgStart()}},{t:'Cancelar',c:'ghost'}]);
+
 /* ---------- inicio general y módulos ---------- */
 /* Para añadir un módulo nuevo: añade su pantalla y una entrada aquí con open() */
 const tablasPct=()=>tablasPctOf(stats);
 const MODULES=[
  {id:'tablas',t:'Tablas de multiplicar',d:'Cohete, globos, contrarreloj y parejas.',bg:'#ffc12e',open:home,prog:()=>`Dominado: ${tablasPct()}% de las tablas del 1 al 10`,
   icon:`<svg viewBox="0 0 110 110"><rect x="6" y="6" width="98" height="98" rx="26" fill="#fff" opacity=".6"/><text x="55" y="50" text-anchor="middle" font-family="Baloo 2,system-ui" font-weight="800" font-size="34" fill="#1b2147">3×4</text><text x="55" y="88" text-anchor="middle" font-family="Baloo 2,system-ui" font-weight="800" font-size="34" fill="#ff4f8b">12</text></svg>`},
+ {id:'cuerpo',t:'Huesos y músculos',d:'El esqueleto, la pelvis y los músculos: explora, pon etiquetas y adivina.',bg:'#ff9cbd',open:bHome,prog:()=>`Dominado: ${bPctOf(bst)}% de huesos y músculos`,
+  icon:boneIcon().replace('viewBox="0 0 90 90"','viewBox="0 0 90 90" width="110" height="110"')},
  {id:'europa',t:'Países de Europa',d:'Países y capitales: explora el mapa, coloca países y adivina capitales.',bg:'#7fd6e3',open:euHome,prog:()=>`Dominado: ${euPctOf(eust)}% de países y capitales`,
   icon:tilesIcon(ZONES.map(z=>z.c)).replace('viewBox="0 0 90 90"','viewBox="0 0 90 90" width="110" height="110"')}];
 function portal(){show('portal');const p=cur();$('#hello').textContent=p?`¡Hola, ${p.name}!`:'¡Hola!';
@@ -928,6 +1315,7 @@ function editProfile(id){const p=profiles.find(x=>x.id===id),first=!profiles.len
 $$('[data-home]').forEach(b=>b.onclick=home);
 if(!profiles.find(p=>p.id===pid))pid=profiles[0]?profiles[0].id:null;
 $$('[data-eu]').forEach(b=>b.onclick=euHome);
+$$('[data-body]').forEach(b=>b.onclick=bHome);
 $$('[data-portal]').forEach(b=>b.onclick=portal);
 if(pid){loadProfile();portal()}else{drawWho();portal();editProfile(null)}
 }
