@@ -249,6 +249,17 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--pink);outline-o
 .sbm{background:#e84393!important;box-shadow:0 6px 0 #b0306f!important}
 .mc .f.tx.pic{padding:0;overflow:hidden;background:var(--card)}
 .mc .f.tx.pic svg{width:100%;height:100%;max-height:none}
+.gbox{margin-top:14px;text-align:left;background:var(--soft);border-radius:16px;padding:12px 14px}
+.gbox h3,.gcard h3{font-size:18px;margin:0 0 8px}.gbox h3 small,.gcard h3 small{font-family:Nunito,system-ui,sans-serif;font-size:13px;color:var(--mute)}
+.newrec{margin:0 0 8px;font-weight:800;color:#fff;background:var(--green);border-radius:10px;padding:4px 10px;display:inline-block}
+.grow{display:grid;grid-template-columns:30px 34px minmax(0,1fr) auto;gap:8px;align-items:center;padding:5px 2px;font-weight:800;font-size:16px}
+.grow .pos{width:28px;height:28px;font-size:15px}.grow .av{width:30px;height:30px;font-size:16px}
+.grow .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.grow .gs{white-space:nowrap;font-size:15px}
+.grow.me{background:var(--card);border-radius:10px}
+.grank{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px}
+.gcard{padding:16px}
+.recl{display:block;margin-top:6px;font-size:13px;font-weight:800;background:rgba(255,255,255,.55);border-radius:8px;padding:2px 8px;width:fit-content}
+@media(max-width:600px){.mode .recl{font-size:11.5px;margin:4px auto 0;padding:2px 6px}}
 .mapcard{position:relative}
 .mapw svg.geo{touch-action:none;cursor:grab}
 .zbtns{position:absolute;right:16px;top:16px;display:flex;flex-direction:column;gap:6px;z-index:2}
@@ -467,6 +478,8 @@ button,.tile{touch-action:manipulation}
   <div class="seg" id="lbTabs"></div>
   <div class="card" style="margin-top:16px"><div class="lbrow lbh"><span></span><span></span><span>Jugador</span><span>★</span><span>%</span></div><div id="lbList"></div></div>
   <p class="muted">Ordenado por estrellas ganadas en el módulo. "Dominado" es lo que ya han acertado 5 veces seguidas.</p>
+  <h2 class="secttl" style="margin-top:22px">Récords por minijuego</h2>
+  <div class="grank" id="gRank"></div>
 </div></section>
 
 <!-- CUERPO: MENÚ -->
@@ -660,13 +673,13 @@ function renderHome(){
  $('#tAll').onclick=()=>{cfg.tables=R12.slice(0,cfg.max);saveCfg();renderHome()};$('#tNone').onclick=()=>{cfg.tables=[];saveCfg();renderHome()};const t1=$('#t110');if(t1)t1.onclick=()=>{cfg.tables=R12.slice(0,10);saveCfg();renderHome()};
  $$('#lvls [data-n]').forEach(b=>b.onclick=()=>{const n=+b.dataset.n;const t=cfg.tables.includes(n)?cfg.tables.filter(x=>x!==n):[...cfg.tables,n].sort((a,b)=>a-b);cfg.tables=t;saveCfg();renderHome()});
  const li=$('#lvlInfo');li.classList.toggle('warn',!cfg.tables.length);li.textContent=cfg.tables.length?`Entran las tablas del ${cfg.tables.join(', ')} · multiplicando hasta ×${cfg.max}`:'Toca las tablas que quieras practicar.';
- $('#modes').innerHTML=MODES.map(m=>`<button class="mode" data-m="${m.id}" style="background:${m.bg}">${ICONS[m.id]}<div><h3>${m.t}</h3><p>${m.d}</p></div></button>`).join('');
+ $('#modes').innerHTML=MODES.map(m=>`<button class="mode" data-m="${m.id}" style="background:${m.bg}">${ICONS[m.id]}<div><h3>${m.t}</h3><p>${m.d}</p>${recLine('tablas',m.id)}</div></button>`).join('');
  $$('#modes [data-m]').forEach(b=>b.onclick=()=>start(b.dataset.m))}
 function start(m){pool=null;if(m!=='progress'&&!cfg.tables.length){const li=$('#lvlInfo');li.classList.add('warn');li.textContent='Primero elige al menos una tabla.';$('#lvls').classList.remove('nudge');void $('#lvls').offsetWidth;$('#lvls').classList.add('nudge');beep('ko');return}({rocket:()=>rocketStart(),balloons:balloonStart,clock:clockStart,memory:memStart,progress:progressStart})[m]()}
 
 /* ---------- cohete ---------- */
 const RK={};
-function rocketStart(queue){show('rocket');RK.queue=queue||null;RK.n=queue?queue.length:cfg.count;RK.i=0;RK.ok=0;RK.miss=[];RK.t=G;$('#rkHintB').hidden=!cfg.hints;drawTrack();rocketNext()}
+function rocketStart(queue){show('rocket');RK.queue=queue||null;RK.n=queue?queue.length:cfg.count;RK.i=0;RK.ok=0;RK.miss=[];RK.t=G;RK.t0=performance.now();$('#rkHintB').hidden=!cfg.hints;drawTrack();rocketNext()}
 function drawTrack(){const f=RK.n?RK.ok/RK.n:0,y=360-f*300;let st='';for(let i=0;i<22;i++)st+=`<circle cx="${(i*37)%100}" cy="${(i*71)%400}" r="${i%3?1:1.8}" fill="#fff" opacity=".7"/>`;
  let marks='';for(let i=0;i<=RK.n;i++){const yy=360-i/RK.n*300;marks+=`<line x1="40" x2="60" y1="${yy}" y2="${yy}" stroke="#fff" stroke-width="2" opacity="${i<=RK.ok?.9:.3}"/>`}
  $('#rkTrack').innerHTML=`${st}<circle cx="50" cy="32" r="24" fill="#fff6c9"/><circle cx="42" cy="26" r="5" fill="#e8d98f"/><circle cx="58" cy="38" r="4" fill="#e8d98f"/><line x1="50" x2="50" y1="60" y2="370" stroke="#fff" stroke-width="2" stroke-dasharray="4 6" opacity=".4"/>${marks}<g style="transform:translate(50px,${y}px);transition:transform .6s cubic-bezier(.3,1.4,.5,1)">${ROCKET}</g>`}
@@ -680,7 +693,7 @@ function showHint(q){RK.hinted=true;$('#rkHint').innerHTML=arraySVG(q.x,q.y,cfg.
 $('#rkHintB').onclick=()=>{if(RK.q)showHint(RK.q)};
 $('#rkNext').onclick=()=>rocketNext();
 function rocketEnd(){const f=RK.ok/RK.n,st=f>=.9?3:f>=.7?2:f>=.4?1:0;const miss=RK.miss.map(([a,b])=>`<span>${a} × ${b} = ${a*b}</span>`).join('');const mq=[...RK.miss];
- const extra=mq.length?`<p class="muted" style="margin:12px 0 0">Para repasar:</p><div class="misslist">${miss}</div>`:'';
+ const extra=(mq.length?`<p class="muted" style="margin:12px 0 0">Para repasar:</p><div class="misslist">${miss}</div>`:'')+(RK.queue?'':gScore('t_cohete',RK.ok,RK.n,RK.t0));
  addStars(st);if(st===3){confetti();beep('win')}
  modal(`<h2>${f===1?'¡A la Luna!':st?'¡Buen viaje!':'¡Sigue entrenando!'}</h2>${starsRow(st)}<p style="font-size:19px;font-weight:700;margin:0">${RK.ok} de ${RK.n} aciertos</p>${extra}`,
   [...(mq.length?[{t:'Repasar fallos',c:'alt',f:()=>rocketStart(shuffle(mq.concat(mq)).slice(0,Math.max(mq.length*2,4)))}]:[]),{t:'Otra vez',f:()=>rocketStart()},{t:'Menú',c:'ghost',f:home}])}
@@ -690,12 +703,12 @@ function rocketEnd(){const f=RK.ok/RK.n,st=f>=.9?3:f>=.7?2:f>=.4?1:0;const miss=
    Si ese globo se escapa, la multiplicación vuelve a salir más tarde. */
 const B={};const SPD={tranquila:38,normal:52,rapida:70},GAP={tranquila:1.05,normal:.8,rapida:.6},BDUR={tranquila:90,normal:60,rapida:45};
 const bKind=()=>cfg.qtype==='mix'?(Math.random()<.5?'result':'missing'):cfg.qtype;
-function balloonStart(){show('balloons');Object.assign(B,{t:G,score:0,bals:[],run:false,dur:BDUR[cfg.speed],next:0,lane:-1,q:null,retry:[]});
+function balloonStart(){show('balloons');Object.assign(B,{t0:performance.now(),t:G,score:0,bals:[],run:false,dur:BDUR[cfg.speed],next:0,lane:-1,q:null,retry:[]});
  $('#bScore').textContent=0;$('#bSec').textContent=B.dur;$('#bBar').style.width='100%';$('#bQ').innerHTML='<span style="font-size:.6em">Prepárate…</span>';$('#bMsg').textContent='';
  $$('#bArea .bal').forEach(e=>e.remove());const area=$('#bArea'),H=area.clientHeight;
  for(let i=0;i<7;i++)bSpawn(H*(.2+i*.11)+Math.random()*20);
  let cd=$('#bArea .cd');if(!cd){cd=document.createElement('div');cd.className='cd';area.appendChild(cd)}
- countdown(cd,()=>{if(B.t!==G)return;B.run=true;B.end=performance.now()+B.dur*1000;B.last=performance.now();B.next=GAP[cfg.speed];bAsk();raf=requestAnimationFrame(bLoop)})}
+ countdown(cd,()=>{if(B.t!==G)return;B.run=true;B.t0=performance.now();B.end=performance.now()+B.dur*1000;B.last=performance.now();B.next=GAP[cfg.speed];bAsk();raf=requestAnimationFrame(bLoop)})}
 function bSpawn(y0){const area=$('#bArea'),W=area.clientWidth,H=area.clientHeight,lanes=Math.max(3,Math.min(6,Math.floor(W/110))),lw=W/lanes,bw=Math.min(92,lw*.86);
  let a,b,kind,rep=false,v,t=0;
  if(B.retry.length){({a,b,kind}=B.retry.shift());rep=true;v=kind==='result'?a*b:b}
@@ -720,31 +733,31 @@ function bHit(o){if(!o.alive||!B.run||B.t!==G||!B.q)return;o.alive=false;const e
  if(o.v===B.q.ans){el.classList.add('pop');beep('pop');if(!B.wrongRec)record(B.q,true);B.score++;$('#bScore').textContent=B.score;$('#bMsg').textContent='¡Pum! '+solved(B.q);B.q=null;bAsk()}
  else{el.classList.add('wrong');beep('ko');if(o.rep)B.retry.push({a:o.a,b:o.b,kind:o.kind});if(!B.wrongRec){record(B.q,false);B.wrongRec=true}B.end-=2000;$('#bMsg').textContent='¡Ese no! −2 segundos'}}
 function bEnd(){if(B.t!==G)return;B.bals.forEach(o=>{o.alive=false;o.el.style.opacity=.3});const k='globos_'+cfg.speed,rec=B.score>(best[k]||0);if(rec){best[k]=B.score;LS.set('best',best)}const s=B.score,st=s>=18?3:s>=9?2:s>=3?1:0;
- endGame(rec&&s?'¡Nuevo récord!':'¡Tiempo!',`${s} globos explotados`,st,balloonStart,`<p class="muted" style="margin:6px 0 0">Récord: ${best[k]||0}</p>`)}
+ endGame('¡Tiempo!',`${s} globos explotados`,st,balloonStart,gScore('t_globos',s,0,B.t0))}
 
 /* ---------- contrarreloj ---------- */
 const C={};const DUR={tranquila:90,normal:60,rapida:45};
-function clockStart(){show('clock');Object.assign(C,{t:G,score:0,combo:0,ok:0,dur:DUR[cfg.speed],run:false});$('#cScore').textContent=0;$('#cMult').textContent=1;$('#cSec').textContent=C.dur;$('#cBar').style.width='100%';$('#cQ').innerHTML='';$('#cA').innerHTML='';$('#cFb').textContent='';
- countdown($('#cCd'),()=>{C.end=performance.now()+C.dur*1000;C.run=true;raf=requestAnimationFrame(cTick);cNext()})}
+function clockStart(){show('clock');Object.assign(C,{t0:performance.now(),t:G,score:0,combo:0,ok:0,dur:DUR[cfg.speed],run:false});$('#cScore').textContent=0;$('#cMult').textContent=1;$('#cSec').textContent=C.dur;$('#cBar').style.width='100%';$('#cQ').innerHTML='';$('#cA').innerHTML='';$('#cFb').textContent='';
+ countdown($('#cCd'),()=>{C.t0=performance.now();C.end=performance.now()+C.dur*1000;C.run=true;raf=requestAnimationFrame(cTick);cNext()})}
 function cTick(now){if(C.t!==G||!C.run)return;const left=Math.max(0,(C.end-now)/1000);$('#cSec').textContent=Math.ceil(left);$('#cBar').style.width=(left/C.dur*100)+'%';if(left<=0){C.run=false;return cEnd()}raf=requestAnimationFrame(cTick)}
 function cNext(){if(C.t!==G||!C.run)return;const q=makeQ();$('#cQ').innerHTML=qHTML(q);const fb=$('#cFb');
  answerUI($('#cA'),q,(v,good)=>{if(C.t!==G||!C.run)return;record(q,good);
   if(good){C.combo++;C.ok++;const m=1+Math.floor(C.combo/5);C.score+=m;$('#cScore').textContent=C.score;$('#cMult').textContent=1+Math.floor(C.combo/5);beep('ok');fb.className='fb good';fb.textContent=C.combo>=5?`¡Racha de ${C.combo}!`:'¡Bien!';setTimeout(cNext,250)}
   else{C.combo=0;$('#cMult').textContent=1;beep('ko');fb.className='fb bad';fb.textContent=solved(q);setTimeout(cNext,1100)}})}
 function cEnd(){kp=null;$('#cA').querySelectorAll('button').forEach(b=>b.disabled=true);const k='reloj_'+cfg.speed,rec=C.score>(best[k]||0);if(rec){best[k]=C.score;LS.set('best',best)}const s=C.score,st=s>=25?3:s>=14?2:s>=5?1:0;
- endGame(rec&&s?'¡Nuevo récord!':'¡Tiempo!',`${s} puntos · ${C.ok} aciertos`,st,clockStart,`<p class="muted" style="margin:6px 0 0">Récord: ${best[k]||0}</p>`)}
+ endGame('¡Tiempo!',`${s} puntos · ${C.ok} aciertos`,st,clockStart,gScore('t_reloj',s,0,C.t0))}
 
 /* ---------- parejas ---------- */
 const M={};
 function memStart(){show('memory');const facts=[],used=new Set();let g=0;while(facts.length<6&&g++<600){const [a,b]=pick();if(used.has(a*b))continue;used.add(a*b);facts.push([a,b])}
  const cards=[];facts.forEach(([a,b],i)=>{const sw=Math.random()<.5;cards.push({id:i,a,b,op:true,x:sw?b:a,y:sw?a:b},{id:i,a,b,op:false})});shuffle(cards);
- Object.assign(M,{t:G,cards,up:[],moves:0,pairs:0,lock:false,tot:facts.length});$('#mMoves').textContent=0;$('#mPairs').textContent=0;$('#mTot').textContent=facts.length;
+ Object.assign(M,{t0:performance.now(),t:G,cards,up:[],moves:0,pairs:0,lock:false,tot:facts.length});$('#mMoves').textContent=0;$('#mPairs').textContent=0;$('#mTot').textContent=facts.length;
  $('#mem').innerHTML=cards.map((c,i)=>`<button class="mc" data-i="${i}" aria-label="Carta"><div class="in"><div class="b">×</div><div class="f ${c.op?'':'n'}">${c.op?`${c.x} × ${c.y}`:c.a*c.b}${c.op&&c.x*c.y<=40?arraySVG(c.x,c.y,'block').replace('<svg','<svg aria-hidden="true"'):''}</div></div></button>`).join('');
  $$('#mem .mc').forEach(el=>el.onclick=()=>mFlip(el))}
 function mFlip(el){if(M.lock||M.t!==G||el.classList.contains('up')||el.classList.contains('done'))return;const c=M.cards[+el.dataset.i];el.classList.add('up');el.setAttribute('aria-label',c.op?`${c.x} por ${c.y}`:String(c.a*c.b));M.up.push(el);beep('tick');
  if(M.up.length<2)return;M.moves++;$('#mMoves').textContent=M.moves;const [e1,e2]=M.up,c1=M.cards[+e1.dataset.i],c2=M.cards[+e2.dataset.i];M.up=[];
- if(c1.id===c2.id&&c1.op!==c2.op){setTimeout(()=>{e1.classList.add('done');e2.classList.add('done');beep('ok')},300);record({a:c1.a,b:c1.b},true);M.pairs++;$('#mPairs').textContent=M.pairs;
-  if(M.pairs===M.tot){const st=M.moves<=M.tot+3?3:M.moves<=M.tot*2+2?2:1;setTimeout(()=>{if(M.t===G)endGame('¡Todas las parejas!',`En ${M.moves} intentos`,st,memStart)},800)}}
+ if(c1.id===c2.id&&c1.op!==c2.op){setTimeout(()=>{e1.classList.add('done');e2.classList.add('done');beep('ok')},300);M.pairs++;$('#mPairs').textContent=M.pairs;
+  if(M.pairs===M.tot){const st=M.moves<=M.tot+3?3:M.moves<=M.tot*2+2?2:1;setTimeout(()=>{if(M.t===G)endGame('¡Todas las parejas!',`En ${M.moves} intentos`,st,memStart,gScore('t_parejas',M.moves,0,M.t0))},800)}}
  else{M.lock=true;setTimeout(()=>{e1.classList.remove('up');e2.classList.remove('up');M.lock=false},950)}}
 
 /* ---------- progreso ---------- */
@@ -905,7 +918,7 @@ function euRenderHome(){
  $('#euAsk').innerHTML=[['name','El país'],['capital','La capital'],['mix','Mezcla']].map(([v,t])=>`<button class="chip ${eucfg.ask===v?'on':''}" data-a="${v}">${t}</button>`).join('');
  $$('#euAsk [data-a]').forEach(b=>b.onclick=()=>{eucfg.ask=b.dataset.a;euSaveCfg();euRenderHome()});
  $('#geoNote').hidden=!!euList().length;$('#geoNote').textContent='Elige al menos una zona para jugar.';
- $('#euModes').innerHTML=EUMODES.map(m=>`<button class="mode" data-m="${m.id}" style="background:${m.bg}">${m.icon}<div><h3>${m.t}</h3><p>${m.d}</p></div></button>`).join('');
+ $('#euModes').innerHTML=EUMODES.map(m=>`<button class="mode" data-m="${m.id}" style="background:${m.bg}">${m.icon}<div><h3>${m.t}</h3><p>${m.d}</p>${recLine('europa',m.id)}</div></button>`).join('');
  $$('#euModes [data-m]').forEach(b=>b.onclick=()=>{if(b.dataset.m!=='prog'&&!euList().length){$('#euZones').classList.remove('nudge');void $('#euZones').offsetWidth;$('#euZones').classList.add('nudge');beep('ko');return}({explore:euExpStart,where:euWhereStart,place:euPlaceStart,cap:euCapStart,mem:euMemStart,prog:euProgStart})[b.dataset.m]()})}
 
 /* ---------- explorar ---------- */
@@ -922,7 +935,7 @@ euMapTap('#expMap',k=>{expSel=k;euExpRender();if(innerWidth<760)$('#expInfo').sc
 
 /* ---------- ¿dónde está? ---------- */
 const WH={};
-function euWhereStart(){show('euwhere');Object.assign(WH,{t:G,i:0,n:Math.min(10,Math.max(5,euList().length)),ok:0,found:new Set(),last:null,busy:true});$('#whOk').textContent=0;whNext()}
+function euWhereStart(){show('euwhere');Object.assign(WH,{t0:performance.now(),t:G,i:0,n:Math.min(10,Math.max(5,euList().length)),ok:0,found:new Set(),last:null,busy:true});$('#whOk').textContent=0;whNext()}
 function whRender(extra=[]){mapRefresh=()=>whRender(extra);const sh=new Set([...WH.found,...extra]);drawMap('#whMap',{only:euList().map(c=>c.k),shown:sh,fill:(c,on)=>!on?'var(--land)':WH.found.has(c.k)?polc(c):'var(--tile)'})}
 function whNext(){if(WH.t!==G)return;if(WH.i>=WH.n)return whEnd();let c,g=0;do{c=euPick('loc');g++}while(g<15&&(c.k===WH.last||WH.found.has(c.k)));WH.last=c.k;
  const kind=eucfg.ask==='mix'?(Math.random()<.5?'name':'capital'):eucfg.ask;WH.q={c,kind};
@@ -932,12 +945,12 @@ function whNext(){if(WH.t!==G)return;if(WH.i>=WH.n)return whEnd();let c,g=0;do{c
 euMapTap('#whMap',k=>{if(WH.busy||WH.t!==G)return;WH.busy=true;const{c,kind}=WH.q,key=(kind==='name'?'loc':'cap')+':'+c.k,fb=$('#whFb');WH.i++;
  if(k===c.k){euRec(key,true);WH.ok++;$('#whOk').textContent=WH.ok;WH.found.add(k);whRender();tileEl('#whMap',k).classList.add('good');beep('ok');fb.className='fb good';fb.textContent=`¡Sí! ${c.n} · capital ${c.cap}`;setTimeout(whNext,1100)}
  else{euRec(key,false);beep('ko');whRender([k,c.k]);tileEl('#whMap',k).classList.add('bad');tileEl('#whMap',c.k).classList.add('hint');fb.className='fb bad';fb.textContent=`Eso es ${EUK[k].n}. ${c.n} está donde parpadea.`;setTimeout(whNext,2400)}});
-function whEnd(){const f=WH.ok/WH.n,st=f>=.9?3:f>=.7?2:f>=.4?1:0;endGame(f===1?'¡Explorador experto!':'¡Fin del viaje!',`${WH.ok} de ${WH.n} países encontrados`,st,euWhereStart,'',euHome,'europa')}
+function whEnd(){const f=WH.ok/WH.n,st=f>=.9?3:f>=.7?2:f>=.4?1:0;endGame(f===1?'¡Explorador experto!':'¡Fin del viaje!',`${WH.ok} de ${WH.n} países encontrados`,st,euWhereStart,gScore('e_donde',WH.ok,WH.n,WH.t0),euHome,'europa')}
 
 /* ---------- coloca los países (arrastrar) ---------- */
 const PL={};
 function euPlaceStart(){show('euplace');const n=Math.min(8,euList().length),picks=[];while(picks.length<n)picks.push(euPick('loc',picks).k);
- Object.assign(PL,{t:G,left:shuffle([...picks]),placed:new Set(),ko:0,failed:new Set(),sel:null});$('#plFb').textContent='';plRender()}
+ Object.assign(PL,{t0:performance.now(),t:G,left:shuffle([...picks]),placed:new Set(),ko:0,failed:new Set(),sel:null});$('#plFb').textContent='';plRender()}
 function plRender(){mapRefresh=plRender;$('#plKo').textContent=PL.ko;$('#plLeft').textContent=PL.left.length;
  $('#plTray').innerHTML=PL.left.map(k=>`<button class="tag ${PL.sel===k?'sel':''}" data-k="${k}">${EUK[k].n}</button>`).join('');
  drawMap('#plMap',{only:euList().map(c=>c.k),shown:PL.placed,fill:(c,on)=>!on?'var(--land)':PL.placed.has(c.k)?polc(c):'var(--tile)'});
@@ -952,12 +965,12 @@ function plGrab(e,el){if(e.button>0)return;e.preventDefault();const k=el.dataset
 euMapTap('#plMap',k=>{if(PL.sel)plDrop(PL.sel,k)});
 function plDrop(k,code){if(PL.t!==G||PL.placed.has(code))return;const fb=$('#plFb');
  if(code===k){PL.placed.add(k);PL.left=PL.left.filter(x=>x!==k);PL.sel=null;if(!PL.failed.has(k))euRec('loc:'+k,true);beep('ok');fb.className='fb good';fb.textContent=`¡Bien! ${EUK[k].n}`;plRender();tileEl('#plMap',k).classList.add('good');
-  if(!PL.left.length){const st=PL.ko<=1?3:PL.ko<=4?2:1;setTimeout(()=>{if(PL.t===G)endGame('¡Mapa completo!',PL.ko?`Con ${PL.ko} ${PL.ko===1?'fallo':'fallos'}`:'¡Sin ningún fallo!',st,euPlaceStart,'',euHome,'europa')},700)}}
+  if(!PL.left.length){const st=PL.ko<=1?3:PL.ko<=4?2:1;setTimeout(()=>{if(PL.t===G)endGame('¡Mapa completo!',PL.ko?`Con ${PL.ko} ${PL.ko===1?'fallo':'fallos'}`:'¡Sin ningún fallo!',st,euPlaceStart,gScore('e_coloca',PL.ko,0,PL.t0),euHome,'europa')},700)}}
  else{PL.ko++;if(!PL.failed.has(k)){PL.failed.add(k);euRec('loc:'+k,false)}beep('ko');fb.className='fb bad';fb.textContent=`Ahí no va ${EUK[k].n}. ¡Prueba otra vez!`;PL.sel=k;plRender();const g=tileEl('#plMap',code);if(g)g.classList.add('bad');const tg=$(`#plTray .tag[data-k="${k}"]`);if(tg)tg.classList.add('no')}}
 
 /* ---------- capitales ---------- */
 const CQ={};
-function euCapStart(){show('eucap');Object.assign(CQ,{t:G,i:0,n:10,ok:0,last:null});cqNext()}
+function euCapStart(){show('eucap');Object.assign(CQ,{t0:performance.now(),t:G,i:0,n:10,ok:0,last:null});cqNext()}
 function cqNext(){if(CQ.t!==G)return;if(CQ.i>=CQ.n)return cqEnd();const L=euList();let c,g=0;do{c=euPick('cap');g++}while(g<15&&c.k===CQ.last&&L.length>1);CQ.last=c.k;
  const kind=Math.random()<.5?'c2p':'p2c',fb=$('#cqFb');fb.textContent='';fb.className='fb';
  $('#cqCount').textContent=`Pregunta ${CQ.i+1} de ${CQ.n}`;
@@ -971,19 +984,19 @@ function cqNext(){if(CQ.t!==G)return;if(CQ.i>=CQ.n)return cqEnd();const L=euList
   CQ.map={only:[c.k],labels:'all',cap:c.k};mapRefresh();
   if(good){CQ.ok++;beep('ok');fb.className='fb good';fb.textContent=`¡Eso es! ${c.cap} es la capital de ${c.n}`;setTimeout(cqNext,1300)}
   else{beep('ko');fb.className='fb bad';fb.textContent=`${c.cap} es la capital de ${c.n}`;setTimeout(cqNext,2300)}})}
-function cqEnd(){const f=CQ.ok/CQ.n,st=f>=.9?3:f>=.7?2:f>=.4?1:0;endGame(f===1?'¡Todas bien!':'¡Fin!',`${CQ.ok} de ${CQ.n} capitales`,st,euCapStart,'',euHome,'europa')}
+function cqEnd(){const f=CQ.ok/CQ.n,st=f>=.9?3:f>=.7?2:f>=.4?1:0;endGame(f===1?'¡Todas bien!':'¡Fin!',`${CQ.ok} de ${CQ.n} capitales`,st,euCapStart,gScore('e_capitales',CQ.ok,CQ.n,CQ.t0),euHome,'europa')}
 
 /* ---------- parejas país-capital ---------- */
 const EM={};
 function euMemStart(){show('eumem');const n=Math.min(6,euList().length),picks=[];while(picks.length<n)picks.push(euPick('cap',picks).k);
  const cards=[];picks.forEach((k,i)=>cards.push({id:i,k,t:EUK[k].n,sub:'País'},{id:i,k,t:EUK[k].cap,sub:'Capital'}));shuffle(cards);
- Object.assign(EM,{t:G,cards,up:[],moves:0,pairs:0,lock:false,tot:n});$('#emMoves').textContent=0;$('#emPairs').textContent=0;$('#emTot').textContent=n;
+ Object.assign(EM,{t0:performance.now(),t:G,cards,up:[],moves:0,pairs:0,lock:false,tot:n});$('#emMoves').textContent=0;$('#emPairs').textContent=0;$('#emTot').textContent=n;
  $('#euMem').innerHTML=cards.map((c,i)=>`<button class="mc" data-i="${i}" aria-label="Carta"><div class="in"><div class="b" style="background:var(--blue);box-shadow:0 5px 0 #1a46b8">?</div><div class="f tx"><small>${c.sub}</small>${c.t}</div></div></button>`).join('');
  $$('#euMem .mc').forEach(el=>el.onclick=()=>emFlip(el))}
 function emFlip(el){if(EM.lock||EM.t!==G||el.classList.contains('up')||el.classList.contains('done'))return;const c=EM.cards[+el.dataset.i];el.classList.add('up');el.setAttribute('aria-label',`${c.sub}: ${c.t}`);EM.up.push(el);beep('tick');
  if(EM.up.length<2)return;EM.moves++;$('#emMoves').textContent=EM.moves;const[e1,e2]=EM.up,c1=EM.cards[+e1.dataset.i],c2=EM.cards[+e2.dataset.i];EM.up=[];
  if(c1.id===c2.id){setTimeout(()=>{e1.classList.add('done');e2.classList.add('done');beep('ok')},300);euRec('cap:'+c1.k,true);EM.pairs++;$('#emPairs').textContent=EM.pairs;
-  if(EM.pairs===EM.tot){const st=EM.moves<=EM.tot+3?3:EM.moves<=EM.tot*2+2?2:1;setTimeout(()=>{if(EM.t===G)endGame('¡Todas las parejas!',`En ${EM.moves} intentos`,st,euMemStart,'',euHome,'europa')},800)}}
+  if(EM.pairs===EM.tot){const st=EM.moves<=EM.tot+3?3:EM.moves<=EM.tot*2+2?2:1;setTimeout(()=>{if(EM.t===G)endGame('¡Todas las parejas!',`En ${EM.moves} intentos`,st,euMemStart,gScore('e_parejas',EM.moves,0,EM.t0),euHome,'europa')},800)}}
  else{EM.lock=true;setTimeout(()=>{e1.classList.remove('up');e2.classList.remove('up');EM.lock=false},1100)}}
 
 /* ---------- progreso de Europa ---------- */
@@ -1005,7 +1018,8 @@ function rankRender(){$('#lbTabs').innerHTML=RANKMODS.map(m=>`<button class="${m
  $$('#lbTabs button').forEach(b=>b.onclick=()=>{lbMod=b.dataset.m;rankRender()});
  const M=RANKMODS.find(m=>m.id===lbMod),rows=profiles.map(p=>({p,s:modStars(p.id,lbMod),pc:M.pct(p.id)})).sort((a,b)=>b.s-a.s||b.pc-a.pc);
  $('#lbList').innerHTML=rows.map((r,i)=>`<div class="lbrow ${r.p.id===pid?'me':''}"><span class="pos" style="background:${['#ffc12e','#d3d9ea','#f0b27a'][i]||'var(--soft2)'}">${i+1}</span>${avatar(r.p)}<span class="nm">${esc(r.p.name)}</span><span>★ ${r.s}</span><span>${r.pc}%</span></div>`).join('')
-  +(profiles.length<2?'<p class="muted" style="margin:12px 4px 0">Solo hay un jugador. Añade más tocando el icono de arriba a la derecha.</p>':'')}
+  +(profiles.length<2?'<p class="muted" style="margin:12px 4px 0">Solo hay un jugador. Añade más tocando el icono de arriba a la derecha.</p>':'');
+ $('#gRank').innerHTML=gRankHTML(lbMod)}
 
 /* ================= MÓDULO: HUESOS Y MÚSCULOS ================= */
 /* Dibujos propios: figura centrada en x=200; MIR() copia el lado izquierdo en espejo */
@@ -1175,13 +1189,14 @@ const BMODES=[
  {id:'sort',t:'¿Hueso o músculo?',d:'Contrarreloj: clasifica cada nombre lo más rápido que puedas.',bg:'#ffb19e',icon:()=>`<svg viewBox="0 0 90 90">${boneIcon().replace(/<\/?svg[^>]*>/g,'')}<circle cx="64" cy="64" r="16" fill="#ff6b6b" stroke="#9b4b4b" stroke-width="2.5"/></svg>`},
  {id:'mem',t:'Parejas',d:'Junta cada nombre con su dibujo.',bg:'#a0e7e5',icon:()=>ICONS.memory.replace('>12<','>?<')},
  {id:'prog',t:'Mi progreso',d:'Mira qué huesos y músculos dominas.',bg:'#c9b6ff',icon:()=>ICONS.progress}];
+const BICON={};
 function bHome(){show('body');bRenderHome()}
 function bRenderHome(){
  $('#bCats').innerHTML=BCATS.map(c=>`<button class="chip ${bcfg.cats.includes(c.k)?'on':''}" data-k="${c.k}" aria-pressed="${bcfg.cats.includes(c.k)}"><span class="dot" style="background:${c.c}"></span>${c.n}</button>`).join('')+`<button class="chip" id="bAll">Todo</button><button class="chip" id="bNone">Ninguno</button>`;
  $$('#bCats [data-k]').forEach(b=>b.onclick=()=>{const k=b.dataset.k;bcfg.cats=bcfg.cats.includes(k)?bcfg.cats.filter(x=>x!==k):[...bcfg.cats,k];bSaveCfg();bRenderHome()});
  $('#bAll').onclick=()=>{bcfg.cats=BCATS.map(c=>c.k);bSaveCfg();bRenderHome()};$('#bNone').onclick=()=>{bcfg.cats=[];bSaveCfg();bRenderHome()};
  const n=bList().length,li=$('#bInfo');li.classList.toggle('warn',!n);li.textContent=n?`Entran ${n} partes: ${bcfg.cats.map(k=>BCATS.find(c=>c.k===k).n.toLowerCase()).join(', ')}.`:'Elige al menos un tema para jugar.';
- if(!$('#bModes').children.length){$('#bModes').innerHTML=BMODES.map(m=>`<button class="mode" data-m="${m.id}" style="background:${m.bg}">${m.icon()}<div><h3>${m.t}</h3><p>${m.d}</p></div></button>`).join('');
+ {$('#bModes').innerHTML=BMODES.map(m=>`<button class="mode" data-m="${m.id}" style="background:${m.bg}">${BICON[m.id]||(BICON[m.id]=m.icon())}<div><h3>${m.t}</h3><p>${m.d}</p>${recLine('cuerpo',m.id)}</div></button>`).join('');
   $$('#bModes [data-m]').forEach(b=>b.onclick=()=>{if(b.dataset.m!=='prog'&&b.dataset.m!=='sort'&&!bList().length){const li=$('#bInfo');li.classList.add('warn');$('#bCats').classList.remove('nudge');void $('#bCats').offsetWidth;$('#bCats').classList.add('nudge');beep('ko');return}
    ({explore:bxStart,where:bwStart,place:bpStart,quiz:bqStart,sort:bsStart,mem:bmStart,prog:bgStart})[b.dataset.m]()})}}
 
@@ -1199,7 +1214,7 @@ figTap('#bxFig',k=>{BX.sel=k;bxRender();if(innerWidth<760)$('#bxInfo').scrollInt
 
 /* ---------- ¿dónde está? ---------- */
 const BW={};
-function bwStart(){show('bwhere');Object.assign(BW,{t:G,i:0,n:Math.min(10,Math.max(5,bList().length)),ok:0,found:new Set(),last:null,busy:true});$('#bwOk').textContent=0;bwNext()}
+function bwStart(){show('bwhere');Object.assign(BW,{t0:performance.now(),t:G,i:0,n:Math.min(10,Math.max(5,bList().length)),ok:0,found:new Set(),last:null,busy:true});$('#bwOk').textContent=0;bwNext()}
 function bwRender(extra=[]){const f=BW.q.fig,sh=new Set([...BW.found,...extra]);$('#bwFigName').textContent=FIGS[f].n;
  drawFig('#bwFig',f,{only:bList().map(p=>p.k),labels:'shown',shown:sh,fill:(p,on)=>BW.found.has(p.k)?p.col:neutralB(p)})}
 function bwNext(){if(BW.t!==G)return;if(BW.i>=BW.n)return bwEnd();let p,g=0;do{p=bPick('loc',bList());g++}while(g<15&&(p.k===BW.last||BW.found.has(p.k)));BW.last=p.k;BW.q=p;
@@ -1208,13 +1223,13 @@ function bwNext(){if(BW.t!==G)return;if(BW.i>=BW.n)return bwEnd();let p,g=0;do{p
 figTap('#bwFig',k=>{if(BW.busy||BW.t!==G)return;BW.busy=true;const p=BW.q,fb=$('#bwFb');BW.i++;
  if(k===p.k){bRec('loc:'+p.k,true);BW.ok++;$('#bwOk').textContent=BW.ok;BW.found.add(k);bwRender();$(`#bwFig .tile[data-c="${k}"]`).classList.add('good');beep('ok');fb.className='fb good';fb.textContent=`¡Sí! ${p.n}`;setTimeout(bwNext,1100)}
  else{bRec('loc:'+p.k,false);beep('ko');bwRender([k,p.k]);$(`#bwFig .tile[data-c="${k}"]`).classList.add('bad');$(`#bwFig .tile[data-c="${p.k}"]`).classList.add('hint');fb.className='fb bad';fb.textContent=`Eso es ${art(BPK[k])}. ${p.n} es lo que parpadea.`;setTimeout(bwNext,2400)}});
-function bwEnd(){const f=BW.ok/BW.n,st=f>=.9?3:f>=.7?2:f>=.4?1:0;endGame(f===1?'¡Todo encontrado!':'¡Fin!',`${BW.ok} de ${BW.n} acertadas`,st,bwStart,'',bHome,'cuerpo')}
+function bwEnd(){const f=BW.ok/BW.n,st=f>=.9?3:f>=.7?2:f>=.4?1:0;endGame(f===1?'¡Todo encontrado!':'¡Fin!',`${BW.ok} de ${BW.n} acertadas`,st,bwStart,gScore('c_donde',BW.ok,BW.n,BW.t0),bHome,'cuerpo')}
 
 /* ---------- pon las etiquetas ---------- */
 const BL={figi:0};
 function bpStart(){show('bplace');const figs=bFigs();BL.figi=(BL.figi+1)%figs.length;const f=figs[BL.figi]||figs[0],L=bList().filter(p=>p.fig===f),n=Math.min(8,L.length),picks=[];
  while(picks.length<n)picks.push(bPick('loc',L,picks).k);
- Object.assign(BL,{t:G,f,picks,left:shuffle([...picks]),placed:new Set(),ko:0,failed:new Set(),sel:null});$('#blFb').textContent='';$('#blFigName').textContent=FIGS[f].n;blRender()}
+ Object.assign(BL,{t0:performance.now(),t:G,f,picks,left:shuffle([...picks]),placed:new Set(),ko:0,failed:new Set(),sel:null});$('#blFb').textContent='';$('#blFigName').textContent=FIGS[f].n;blRender()}
 function blRender(){$('#blKo').textContent=BL.ko;$('#blLeft').textContent=BL.left.length;
  $('#blTray').innerHTML=BL.left.map(k=>`<button class="tag ${BL.sel===k?'sel':''}" data-k="${k}">${BPK[k].n}</button>`).join('');
  drawFig('#blFig',BL.f,{only:BL.picks,labels:'slots',placed:BL.placed,fill:(p,on)=>BL.placed.has(p.k)?p.col:neutralB(p)});
@@ -1222,12 +1237,12 @@ function blRender(){$('#blKo').textContent=BL.ko;$('#blLeft').textContent=BL.lef
 figTap('#blFig',k=>{if(BL.sel)blDrop(BL.sel,k)});
 function blDrop(k,code){if(BL.t!==G||BL.placed.has(code))return;const fb=$('#blFb');
  if(code===k){BL.placed.add(k);BL.left=BL.left.filter(x=>x!==k);BL.sel=null;if(!BL.failed.has(k))bRec('loc:'+k,true);beep('ok');fb.className='fb good';fb.textContent=`¡Bien! ${BPK[k].n}`;blRender();
-  if(!BL.left.length){const st=BL.ko<=1?3:BL.ko<=4?2:1;setTimeout(()=>{if(BL.t===G)endGame('¡Etiquetas puestas!',BL.ko?`Con ${BL.ko} ${BL.ko===1?'fallo':'fallos'}`:'¡Sin ningún fallo!',st,bpStart,'',bHome,'cuerpo')},700)}}
+  if(!BL.left.length){const st=BL.ko<=1?3:BL.ko<=4?2:1;setTimeout(()=>{if(BL.t===G)endGame('¡Etiquetas puestas!',BL.ko?`Con ${BL.ko} ${BL.ko===1?'fallo':'fallos'}`:'¡Sin ningún fallo!',st,bpStart,gScore('c_etiquetas',BL.ko,0,BL.t0),bHome,'cuerpo')},700)}}
  else{BL.ko++;if(!BL.failed.has(k)){BL.failed.add(k);bRec('loc:'+k,false)}beep('ko');fb.className='fb bad';fb.textContent=`Ahí no va ${art(BPK[k])}. ¡Prueba otra vez!`;BL.sel=k;blRender();const g=$(`#blFig .tile[data-c="${code}"]`);if(g)g.classList.add('bad');const tg=$(`#blTray .tag[data-k="${k}"]`);if(tg)tg.classList.add('no')}}
 
 /* ---------- ¿qué es? ---------- */
 const BQ={};
-function bqStart(){show('bquiz');Object.assign(BQ,{t:G,i:0,n:10,ok:0,last:null});bqNext()}
+function bqStart(){show('bquiz');Object.assign(BQ,{t0:performance.now(),t:G,i:0,n:10,ok:0,last:null});bqNext()}
 function bqNext(){if(BQ.t!==G)return;if(BQ.i>=BQ.n)return bqEnd();const L=bList();let p,g=0;do{p=bPick('id',L);g++}while(g<15&&p.k===BQ.last&&L.length>1);BQ.last=p.k;
  const kind=Math.random()<.55?'pic':'clue',fb=$('#bqFb');fb.textContent='';fb.className='fb';$('#bqCount').textContent=`Pregunta ${BQ.i+1} de ${BQ.n}`;
  $('#bqQ').innerHTML=kind==='pic'?`¿Cómo se llama ${p.cat==='h'?'este hueso':'este músculo'}?`:`¿Qué ${kindName(p)} es?<small class="clue">${p.d}</small>`;
@@ -1239,12 +1254,12 @@ function bqNext(){if(BQ.t!==G)return;if(BQ.i>=BQ.n)return bqEnd();const L=bList(
   b.classList.add(good?'good':'bad');if(!good)$$('#bqA .opt').forEach(o=>{if(o.dataset.k===p.k)o.classList.add('good')});
   if(kind==='clue'){$('#bqFigC').hidden=false;drawQ()}
   if(good){BQ.ok++;beep('ok');fb.className='fb good';fb.textContent=`¡Eso es! ${p.n}`;setTimeout(bqNext,1300)}else{beep('ko');fb.className='fb bad';fb.textContent=`Era ${art(p)}`;setTimeout(bqNext,2300)}})}
-function bqEnd(){const f=BQ.ok/BQ.n,st=f>=.9?3:f>=.7?2:f>=.4?1:0;endGame(f===1?'¡Todas bien!':'¡Fin!',`${BQ.ok} de ${BQ.n} acertadas`,st,bqStart,'',bHome,'cuerpo')}
+function bqEnd(){const f=BQ.ok/BQ.n,st=f>=.9?3:f>=.7?2:f>=.4?1:0;endGame(f===1?'¡Todas bien!':'¡Fin!',`${BQ.ok} de ${BQ.n} acertadas`,st,bqStart,gScore('c_quees',BQ.ok,BQ.n,BQ.t0),bHome,'cuerpo')}
 
 /* ---------- ¿hueso o músculo? (contrarreloj) ---------- */
 const BSQ={};const SORTDUR={tranquila:60,normal:45,rapida:35};
-function bsStart(){show('bsort');Object.assign(BSQ,{t:G,score:0,combo:0,ok:0,dur:SORTDUR[cfg.speed]||45,run:false,last:null});$('#bsScore').textContent=0;$('#bsSec').textContent=BSQ.dur;$('#bsBar').style.width='100%';$('#bsWord').textContent='';$('#bsFb').textContent='';
- countdown($('#bsCd'),()=>{BSQ.end=performance.now()+BSQ.dur*1000;BSQ.run=true;raf=requestAnimationFrame(bsTick);bsNext()})}
+function bsStart(){show('bsort');Object.assign(BSQ,{t0:performance.now(),t:G,score:0,combo:0,ok:0,dur:SORTDUR[cfg.speed]||45,run:false,last:null});$('#bsScore').textContent=0;$('#bsSec').textContent=BSQ.dur;$('#bsBar').style.width='100%';$('#bsWord').textContent='';$('#bsFb').textContent='';
+ countdown($('#bsCd'),()=>{BSQ.t0=performance.now();BSQ.end=performance.now()+BSQ.dur*1000;BSQ.run=true;raf=requestAnimationFrame(bsTick);bsNext()})}
 function bsTick(now){if(BSQ.t!==G||!BSQ.run)return;const left=Math.max(0,(BSQ.end-now)/1000);$('#bsSec').textContent=Math.ceil(left);$('#bsBar').style.width=(left/BSQ.dur*100)+'%';if(left<=0){BSQ.run=false;return bsEnd()}raf=requestAnimationFrame(bsTick)}
 function bsNext(){const L=BP.filter(p=>p.k!=='frontal'&&p.k!=='m_frontal');let p;do{p=L[Math.floor(Math.random()*L.length)]}while(p.k===BSQ.last);BSQ.last=p.k;BSQ.q=p;BSQ.lock=false;const w=$('#bsWord');w.textContent=p.n;w.classList.remove('in');void w.offsetWidth;w.classList.add('in')}
 function bsAns(c){if(!BSQ.run||BSQ.lock||BSQ.t!==G)return;const p=BSQ.q,fb=$('#bsFb');
@@ -1252,19 +1267,19 @@ function bsAns(c){if(!BSQ.run||BSQ.lock||BSQ.t!==G)return;const p=BSQ.q,fb=$('#b
  else{BSQ.combo=0;BSQ.lock=true;beep('ko');fb.className='fb bad';fb.textContent=`${p.n} es un ${kindName(p)}`;setTimeout(()=>{if(BSQ.t===G&&BSQ.run)bsNext()},1100)}}
 $('#bsH').onclick=()=>bsAns('h');$('#bsM').onclick=()=>bsAns('m');
 function bsEnd(){const k='sort_'+cfg.speed,best2=BS.get('best',{}),rec=BSQ.score>(best2[k]||0);if(rec){best2[k]=BSQ.score;BS.set('best',best2)}const s=BSQ.score,st=s>=22?3:s>=12?2:s>=5?1:0;
- endGame(rec&&s?'¡Nuevo récord!':'¡Tiempo!',`${s} puntos · ${BSQ.ok} aciertos`,st,bsStart,`<p class="muted" style="margin:6px 0 0">Récord: ${best2[k]||s}</p>`,bHome,'cuerpo')}
+ endGame('¡Tiempo!',`${s} puntos · ${BSQ.ok} aciertos`,st,bsStart,gScore('c_sort',s,0,BSQ.t0),bHome,'cuerpo')}
 
 /* ---------- parejas: nombre y dibujo ---------- */
 const BMM={};
 function bmStart(){show('bmem');const L=bList(),n=Math.min(6,L.length),picks=[];while(picks.length<n){const p=bPick('id',L,picks.map(x=>x.k));if(!picks.some(x=>x.n===p.n))picks.push(p);else break}
  const cards=[];picks.forEach((p,i)=>cards.push({id:i,p,pic:false},{id:i,p,pic:true}));shuffle(cards);
- Object.assign(BMM,{t:G,cards,up:[],moves:0,pairs:0,lock:false,tot:picks.length});$('#bmMoves').textContent=0;$('#bmPairs').textContent=0;$('#bmTot').textContent=picks.length;
+ Object.assign(BMM,{t0:performance.now(),t:G,cards,up:[],moves:0,pairs:0,lock:false,tot:picks.length});$('#bmMoves').textContent=0;$('#bmPairs').textContent=0;$('#bmTot').textContent=picks.length;
  $('#bMem').innerHTML=cards.map((c,i)=>`<button class="mc" data-i="${i}" aria-label="Carta"><div class="in"><div class="b" style="background:#e0a800;box-shadow:0 5px 0 #a87e00">?</div><div class="f tx ${c.pic?'pic':''}">${c.pic?figSVG(c.p.fig,{labels:'none',fill:(q)=>q.k===c.p.k?'#ff4f8b':neutralB(q),vb:[c.p.ax-95,c.p.ay-110,190,220]}).replace('class="fig zm"','class="fig"'):`<small>${c.p.cat==='h'?'Hueso':'Músculo'}</small>${c.p.n}`}</div></div></button>`).join('');
  $$('#bMem .mc').forEach(el=>el.onclick=()=>bmFlip(el))}
 function bmFlip(el){if(BMM.lock||BMM.t!==G||el.classList.contains('up')||el.classList.contains('done'))return;const c=BMM.cards[+el.dataset.i];el.classList.add('up');el.setAttribute('aria-label',c.pic?'Dibujo':c.p.n);BMM.up.push(el);beep('tick');
  if(BMM.up.length<2)return;BMM.moves++;$('#bmMoves').textContent=BMM.moves;const[e1,e2]=BMM.up,c1=BMM.cards[+e1.dataset.i],c2=BMM.cards[+e2.dataset.i];BMM.up=[];
  if(c1.id===c2.id){setTimeout(()=>{e1.classList.add('done');e2.classList.add('done');beep('ok')},300);bRec('id:'+c1.p.k,true);BMM.pairs++;$('#bmPairs').textContent=BMM.pairs;
-  if(BMM.pairs===BMM.tot){const st=BMM.moves<=BMM.tot+3?3:BMM.moves<=BMM.tot*2+2?2:1;setTimeout(()=>{if(BMM.t===G)endGame('¡Todas las parejas!',`En ${BMM.moves} intentos`,st,bmStart,'',bHome,'cuerpo')},800)}}
+  if(BMM.pairs===BMM.tot){const st=BMM.moves<=BMM.tot+3?3:BMM.moves<=BMM.tot*2+2?2:1;setTimeout(()=>{if(BMM.t===G)endGame('¡Todas las parejas!',`En ${BMM.moves} intentos`,st,bmStart,gScore('c_parejas',BMM.moves,0,BMM.t0),bHome,'cuerpo')},800)}}
  else{BMM.lock=true;setTimeout(()=>{e1.classList.remove('up');e2.classList.remove('up');BMM.lock=false},1200)}}
 
 /* ---------- progreso ---------- */
@@ -1275,6 +1290,29 @@ function bgRender(){figTabs('#bgTabs',['esq','pel','musF','musB'],BG.fig,f=>{BG.
  $('#bgCats').innerHTML=BCATS.map(c=>{const L=BP.filter(p=>catOf(p.fig)===c.k);let g=0;for(const p of L)for(const t of['loc','id'])if((bst[t+':'+p.k]||[0,0,0])[2]>=5)g++;const pc=Math.round(g/(L.length*2)*100);
   return `<div class="mrow"><span><span class="dot" style="background:${c.c}"></span>${c.n}</span><div class="mbar"><div style="width:${pc}%;background:${c.c}"></div></div><span style="text-align:right">${pc}%</span></div>`}).join('')}
 $('#bReset').onclick=()=>modal('<h2>¿Borrar el cuerpo humano?</h2><p>Se borra el progreso y las estrellas de este módulo para este jugador.</p>',[{t:'Sí, borrar',f:()=>{bst={};BS.set('stats',bst);BS.set('best',{});stars-=modStars(pid,'cuerpo');RAW.set('apr_p'+pid+'_stars_cuerpo',0);RAW.set('apr_p'+pid+'_stars',stars);$('#starN').textContent=stars;bgStart()}},{t:'Cancelar',c:'ghost'}]);
+
+/* ---------- récords por minijuego (de todos los jugadores de este dispositivo) ---------- */
+/* kind: hits = aciertos de N (y menos tiempo) · pts = puntos · fails = menos fallos · moves = menos intentos */
+const GAMES={
+ t_cohete:{n:'Cohete',mod:'tablas',kind:'hits'},t_globos:{n:'Globos',mod:'tablas',kind:'pts',sp:1},t_reloj:{n:'Contrarreloj',mod:'tablas',kind:'pts',sp:1},t_parejas:{n:'Parejas',mod:'tablas',kind:'moves'},
+ c_donde:{n:'¿Dónde está?',mod:'cuerpo',kind:'hits'},c_etiquetas:{n:'Pon las etiquetas',mod:'cuerpo',kind:'fails'},c_quees:{n:'¿Qué es?',mod:'cuerpo',kind:'hits'},c_sort:{n:'¿Hueso o músculo?',mod:'cuerpo',kind:'pts',sp:1},c_parejas:{n:'Parejas',mod:'cuerpo',kind:'moves'},
+ e_donde:{n:'¿Dónde está?',mod:'europa',kind:'hits'},e_coloca:{n:'Coloca los países',mod:'europa',kind:'fails'},e_capitales:{n:'Capitales',mod:'europa',kind:'hits'},e_parejas:{n:'Parejas',mod:'europa',kind:'moves'}};
+const MODE2G={tablas:{rocket:'t_cohete',balloons:'t_globos',clock:'t_reloj',memory:'t_parejas'},europa:{where:'e_donde',place:'e_coloca',cap:'e_capitales',mem:'e_parejas'},cuerpo:{where:'c_donde',place:'c_etiquetas',quiz:'c_quees',sort:'c_sort',mem:'c_parejas'}};
+const SPN={tranquila:'tranquila',normal:'normal',rapida:'rápida'};
+const gKey=(g,sp=cfg.speed)=>GAMES[g].sp?g+'_'+sp:g;
+const gGet=(id,key)=>RAW.get('apr_p'+id+'_gs_'+key,null);
+function gBetter(g,x,y){if(!y)return true;if(!x)return false;const k=GAMES[g].kind;
+ if(k==='hits'){const a=x.a/x.n,b=y.a/y.n;return a!==b?a>b:x.t<y.t}if(k==='pts')return x.a>y.a;return x.a!==y.a?x.a<y.a:x.t<y.t}
+function gFmt(g,s){if(!s)return'—';const k=GAMES[g].kind;return k==='hits'?`${s.a}/${s.n} · ${s.t} s`:k==='pts'?`${s.a} puntos`:k==='fails'?`${s.a} ${s.a===1?'fallo':'fallos'} · ${s.t} s`:`${s.a} intentos · ${s.t} s`}
+function gBoard(g,key=gKey(g)){return profiles.map(p=>({p,s:gGet(p.id,key)})).filter(r=>r.s).sort((x,y)=>gBetter(g,x.s,y.s)?-1:gBetter(g,y.s,x.s)?1:0)}
+function gRowsHTML(g,rows,max=99){return rows.slice(0,max).map((r,i)=>`<div class="grow ${r.p.id===pid?'me':''}"><span class="pos" style="background:${['#ffc12e','#d3d9ea','#f0b27a'][i]||'var(--soft2)'}">${i+1}</span>${avatar(r.p)}<span class="nm">${esc(r.p.name)}</span><span class="gs">${gFmt(g,r.s)}</span></div>`).join('')}
+/* guarda la partida y devuelve el bloque de récords para la ventana final */
+function gScore(g,a,n,t0){const s={a,n:n||0,t:Math.max(1,Math.round((performance.now()-(t0||performance.now()))/1000)),d:Date.now()},key=gKey(g),old=gGet(pid,key),rec=gBetter(g,s,old);
+ if(rec)RAW.set('apr_p'+pid+'_gs_'+key,s);const rows=gBoard(g,key);
+ return `<div class="gbox">${rec&&old?'<p class="newrec">¡Nuevo récord personal!</p>':rec?'<p class="newrec">¡Primer récord guardado!</p>':`<p class="muted" style="margin:0 0 6px">Tu récord: <b>${gFmt(g,old)}</b></p>`}<h3>Ranking de ${GAMES[g].n}${GAMES[g].sp?` <small>(velocidad ${SPN[cfg.speed]})</small>`:''}</h3>${gRowsHTML(g,rows,5)}${profiles.length<2?'<p class="muted" style="margin:6px 0 0;font-size:14px">Cuando juegue otro jugador, aparecerá aquí.</p>':''}</div>`}
+const recLine=(mod,m)=>{const g=MODE2G[mod]&&MODE2G[mod][m];if(!g||!pid)return'';const s=gGet(pid,gKey(g)),top=gBoard(g)[0];
+ return `<span class="recl">${s?`Tu récord: ${gFmt(g,s)}`:'Sin récord todavía'}${top&&top.p.id!==pid?` · 1.º ${esc(top.p.name)}`:''}</span>`};
+function gRankHTML(mod){return Object.keys(GAMES).filter(g=>GAMES[g].mod===mod).map(g=>{const rows=gBoard(g);return `<div class="card gcard"><h3>${GAMES[g].n}${GAMES[g].sp?` <small>(velocidad ${SPN[cfg.speed]})</small>`:''}</h3>${rows.length?gRowsHTML(g,rows):'<p class="muted" style="margin:4px 0 0">Nadie ha jugado todavía.</p>'}</div>`}).join('')}
 
 /* ---------- inicio general y módulos ---------- */
 /* Para añadir un módulo nuevo: añade su pantalla y una entrada aquí con open() */
